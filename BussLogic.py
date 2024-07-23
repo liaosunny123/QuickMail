@@ -1,4 +1,5 @@
 # from SignInWindow import Ui_Dialog as SignInWindow_Ui
+import data_store
 from SigninWindow import Ui_Dialog as SignInWindow_Ui
 from MainWindow import Ui_MainWindow as MainWindow_Ui
 from SubWindow import MyWidget as SubWindow_Ui
@@ -70,8 +71,8 @@ class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
             587,  # SMTP 端口
             "outlook.office365.com",  # POP 服务器地址
             995,  # POP 端口
-            "XX",  # 用户名
-            "XX"  # 密码
+            data_store.USER_NAME,  # 用户名
+            data_store.PASSWORD  # 密码
         )
 
         arr = client.get_email_list(0, 10)
