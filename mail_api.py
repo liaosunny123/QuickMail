@@ -97,7 +97,7 @@ class EmailClient:
             receiver=header_dict.get('To', ''),
             title=header_dict.get('Subject', ''),
             body='',
-            timestamp=datetime.strptime(header_dict.get('Date', '').split("+")[0], "%a, %d %b %Y %H:%M:%S"),
+            timestamp=datetime.strptime(header_dict.get('Date', '').split("+")[0].strip(), "%a, %d %b %Y %H:%M:%S"),
             offset_id=-1
         )
         return email
