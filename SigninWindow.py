@@ -82,7 +82,7 @@ class Ui_Dialog(object):
         self.labelDoveIcon_2.setMinimumSize(QtCore.QSize(200, 200))
         self.labelDoveIcon_2.setMaximumSize(QtCore.QSize(200, 200))
         self.labelDoveIcon_2.setText("")
-        pixmap = QtGui.QPixmap('./icon/quickmail.png')
+        pixmap = QtGui.QPixmap('icon\quickmail.png')
         # 调整图片大小以适应 QLabel
         scaled_pixmap = pixmap.scaled(self.labelDoveIcon_2.size(), aspectRatioMode=QtCore.Qt.KeepAspectRatio)
         # 设置 QLabel 的背景图片

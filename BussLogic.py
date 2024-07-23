@@ -25,7 +25,7 @@ class SignInWindowUi(SignInWindow_Ui, QtWidgets.QDialog):
     def paintEvent(self, event):# set background_img
         painter = QPainter(self)
         painter.drawRect(self.rect())
-        pixmap = QPixmap("./icon/whu_login_background.jpeg")#换成自己的图片的相对路径
+        pixmap = QPixmap("icon\whu_login_background.jpeg")
         painter.drawPixmap(self.rect(), pixmap)
 
     def select_server_address(self):
