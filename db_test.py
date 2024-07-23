@@ -1,4 +1,4 @@
-from emailDB import *
+from db_api import *
 
 def test_email_database():
     # 配置数据库连接信息
