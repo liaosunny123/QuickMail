@@ -7,7 +7,7 @@ from typing import Optional
 
 
 class Email:
-    def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, offset_id: int,
+    def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, offset_id: int = 0,
                  is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', obj_id=""):
         self.sender = sender
         self.receiver = receiver
@@ -97,7 +97,7 @@ class EmailClient:
             receiver=header_dict.get('To', ''),
             title=header_dict.get('Subject', ''),
             body='',
-            timestamp=datetime.strptime(header_dict.get('Date', ''), "%a, %d %b %Y %H:%M:%S +0000 (UTC)"),
+            timestamp=datetime.strptime(header_dict.get('Date', '').split("+")[0], "%a, %d %b %Y %H:%M:%S"),
             offset_id=-1
         )
         return email
