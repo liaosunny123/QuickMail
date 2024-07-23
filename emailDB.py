@@ -3,22 +3,23 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.sql import text
 from datetime import datetime
 from sqlalchemy import inspect
-class Email:
-    def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, obj_id,
-                 is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', offset_id: int=0):
-        self.sender = sender
-        self.receiver = receiver
-        self.title = title
-        self.body = body
-        self.timestamp = timestamp
-        self.is_read = is_read
-        self.is_deleted = is_deleted
-        self.folder = folder
-        self.offset_id = offset_id
-        self.obj_id = obj_id
+from mail_api import Email
+# class Email:
+#     def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, obj_id,
+#                  is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', offset_id: int=0):
+#         self.sender = sender
+#         self.receiver = receiver
+#         self.title = title
+#         self.body = body
+#         self.timestamp = timestamp
+#         self.is_read = is_read
+#         self.is_deleted = is_deleted
+#         self.folder = folder
+#         self.offset_id = offset_id
+#         self.obj_id = obj_id
 
-    def __repr__(self):
-        return f"<Email(title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
+#     def __repr__(self):
+#         return f"<Email(title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
     
 Base = declarative_base()
 
