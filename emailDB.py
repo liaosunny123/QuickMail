@@ -4,8 +4,8 @@ from sqlalchemy.sql import text
 from datetime import datetime
 from sqlalchemy import inspect
 class Email:
-    def __init__(self,id, sender, receiver, title, body, timestamp,is_read=False, is_deleted=False, folder='inbox'):
-        self.id = id  
+    def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, obj_id,
+                 is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', offset_id: int=0):
         self.sender = sender
         self.receiver = receiver
         self.title = title
@@ -14,16 +14,18 @@ class Email:
         self.is_read = is_read
         self.is_deleted = is_deleted
         self.folder = folder
+        self.offset_id = offset_id
+        self.obj_id = obj_id
 
     def __repr__(self):
-        return f"<Email(id={self.id}, title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
+        return f"<Email(title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
     
 Base = declarative_base()
 
 class EmailModel(Base):
     __tablename__ = 'emails'
     
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    obj_id = Column(Integer, primary_key=True)
     sender = Column(String(255), nullable=False)
     receiver = Column(String(255), nullable=False)
     title = Column(String(255), nullable=False)
@@ -35,7 +37,7 @@ class EmailModel(Base):
 
     def to_email(self):
         email = Email(
-            id=self.id,
+            obj_id=self.obj_id,
             sender=self.sender,
             receiver=self.receiver,
             title=self.title,
@@ -45,13 +47,13 @@ class EmailModel(Base):
             is_deleted=self.is_deleted,
             folder=self.folder
         )
-        # email.id = self.id
+        # email.obj_id = self.obj_id
         return email
 
     @classmethod
     def from_email(cls, email):
         return cls(
-            id=email.id,
+            obj_id=email.obj_id,
             sender=email.sender,
             receiver=email.receiver,
             title=email.title,
@@ -73,9 +75,8 @@ class EmailDatabase:
         with self.engine.connect() as conn:
             conn.execute(text(f"""
                 CREATE TABLE IF NOT EXISTS users (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
                     mail_type VARCHAR(255) NOT NULL,
-                    username VARCHAR(255) NOT NULL UNIQUE,
+                    username VARCHAR(255) PRIMARY KEY,
                     password VARCHAR(255) NOT NULL
                 )
             """))
@@ -117,7 +118,7 @@ class EmailDatabase:
         with self.engine.connect() as conn:
             conn.execute(text(f"""
                 CREATE TABLE {username}_emails (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    obj_id VARCHAR(255) PRIMARY KEY,
                     sender VARCHAR(255) NOT NULL,
                     receiver VARCHAR(255) NOT NULL,
                     title VARCHAR(255) NOT NULL,
@@ -133,12 +134,12 @@ class EmailDatabase:
         session = self.Session()
         table_name = f"{self.username}_emails"
         
-        # 插入数据并获取新插入记录的ID
+        # 插入数据并获取新插入记录的obj_id
         result = session.execute(text(f"""
-            INSERT INTO {table_name} (id,sender, receiver, title, body, timestamp, is_read, is_deleted, folder)
-            VALUES (:sender, :receiver, :title, :body, :timestamp, :is_read, :is_deleted, :folder)
+            INSERT INTO {table_name} (obj_id,sender, receiver, title, body, timestamp, is_read, is_deleted, folder)
+            VALUES (:obj_id,:sender, :receiver, :title, :body, :timestamp, :is_read, :is_deleted, :folder)
         """), {
-            'id':email.id,
+            'obj_id':email.obj_id,
             'sender': email.sender,
             'receiver': email.receiver,
             'title': email.title,
@@ -148,24 +149,24 @@ class EmailDatabase:
             'is_deleted': email.is_deleted,
             'folder': email.folder
         })
-        # 提交事务并刷新会话以获取新ID
+        # 提交事务并刷新会话以获取新obj_id
         session.commit()
-        # email_id = result.lastrowid
-        # email.id = email_id
+        # email_obj_id = result.lastrowobj_id
+        # email.obj_id = email_obj_id
         session.close()
         return email
     
-    def get_email_by_id(self, email_id):
+    def get_email_by_obj_id(self, email_obj_id):
         session = self.Session()
         table_name = f"{self.username}_emails"
         result = session.execute(text(f"""
-            SELECT * FROM {table_name} WHERE id = :id
-        """), {'id': email_id}).mappings().fetchone()
+            SELECT * FROM {table_name} WHERE obj_id = :obj_id
+        """), {'obj_id': email_obj_id}).mappings().fetchone()
         session.close()
 
         if result:
             email = Email(
-                id=result['id'],
+                obj_id=result['obj_id'],
                 sender=result['sender'],
                 receiver=result['receiver'],
                 title=result['title'],
@@ -175,7 +176,7 @@ class EmailDatabase:
                 is_deleted=result['is_deleted'],
                 folder=result['folder']
             )
-            # email.id = result['id']
+            # email.obj_id = result['obj_id']
             return email
         return None
 
@@ -190,7 +191,7 @@ class EmailDatabase:
         emails=[]
         for result in results:
             email=Email(
-            id=result['id'],
+            obj_id=result['obj_id'],
             sender=result['sender'],
             receiver=result['receiver'],
             title=result['title'],
@@ -200,7 +201,7 @@ class EmailDatabase:
             is_deleted=result['is_deleted'],
             folder=result['folder']
             )
-            # email.id=result['id']
+            # email.obj_id=result['obj_id']
             emails.append(email)
         return emails
 
@@ -213,21 +214,21 @@ class EmailDatabase:
     def get_draft_emails(self):
         return self.get_folder_emails('drafts')
 
-    def delete_email(self, email_id):
+    def delete_email(self, email_obj_id):
         session = self.Session()
         table_name = f"{self.username}_emails"
         session.execute(text(f"""
-            UPDATE {table_name} SET is_deleted = TRUE WHERE id = :id
-        """), {'id': email_id})
+            UPDATE {table_name} SET is_deleted = TRUE WHERE obj_id = :obj_id
+        """), {'obj_id': email_obj_id})
         session.commit()
         session.close()
 
-    def mark_as_read(self, email_id):
+    def mark_as_read(self, email_obj_id):
         session = self.Session()
         table_name = f"{self.username}_emails"
         session.execute(text(f"""
-            UPDATE {table_name} SET is_read = TRUE WHERE id = :id
-        """), {'id': email_id})
+            UPDATE {table_name} SET is_read = TRUE WHERE obj_id = :obj_id
+        """), {'obj_id': email_obj_id})
         session.commit()
         session.close()
 
@@ -237,7 +238,7 @@ class EmailDatabase:
         session.execute(text(f"""
             UPDATE {table_name}
             SET sender = :sender, receiver = :receiver, title = :title, body = :body, is_read = :is_read, is_deleted = :is_deleted, folder = :folder
-            WHERE id = :id
+            WHERE obj_id = :obj_id
         """), {
             'sender': email.sender,
             'receiver': email.receiver,
@@ -246,7 +247,7 @@ class EmailDatabase:
             'is_read': email.is_read,
             'is_deleted': email.is_deleted,
             'folder': email.folder,
-            'id': email.id
+            'obj_id': email.obj_id
         })
         session.commit()
         session.close()
@@ -261,7 +262,7 @@ class EmailDatabase:
         emails=[]
         for result in results:
             email=Email(
-            id=result['id'],
+            obj_id=result['obj_id'],
             sender=result['sender'],
             receiver=result['receiver'],
             title=result['title'],
@@ -271,7 +272,7 @@ class EmailDatabase:
             is_deleted=result['is_deleted'],
             folder=result['folder']
             )
-            # email.id=result['id']
+            # email.obj_id=result['obj_id']
             emails.append(email)
         return emails
 
