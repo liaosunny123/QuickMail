@@ -1,6 +1,7 @@
 # from SignInWindow import Ui_Dialog as SignInWindow_Ui
 from SigninWindow import Ui_Dialog as SignInWindow_Ui
 from MainWindow import Ui_MainWindow as MainWindow_Ui
+from SubWindow import MyWidget as SubWindow_Ui
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import sys
@@ -56,6 +57,11 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         text = mail_server + username + password
         self.textEdit.setText(text)
 
+
+class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
+    def __init__(self):
+        super(SubWindow, self).__init__()
+
 class MailServer(Smtp, Pop3):
     def __init__(self):
         self.mail_server = " "
@@ -80,6 +86,9 @@ class BussLogic:
     def __init__(self):
         self.sign_in_window = SignInWindowUi()
         self.main_window = MainWindowUi()
+
+        self.sub_window = SubWindow()
+
         self.mail_server = MailServer()
         self.sender_proc = None
         self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
@@ -95,9 +104,9 @@ class BussLogic:
         self.main_window.Delete_Button.clicked.connect(self.delete_mail)
         self.main_window.Resend_button.clicked.connect(self.resend_butt)
         user = 'root'
-        password = 'tyxqc'
+        password = 'fy'
         host = 'localhost'
-        database = 'email'
+        database = 'mail'
         # 创建 EmailDatabase 实例
         self.email_db = EmailDatabase(user=user, password=password, host=host,  database=database)
 
@@ -267,4 +276,7 @@ if __name__ == "__main__":
     # if(BussLogic.win_stage==0):
     #     exit()
     buss.main_window.show()
+
+    buss.sub_window.show()
+
     sys.exit(app.exec_())
