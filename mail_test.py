@@ -7,8 +7,8 @@ if __name__ == "__main__":
         587,  # SMTP 端口
         "outlook.office365.com",  # POP 服务器地址
         995,  # POP 端口
-        "CarmelaLongerbeam60@outlook.fr",  # 用户名
-        "ZUGD3qnDHJ3hAr"  # 密码
+        "USERNAME",  # 用户名
+        "PASSWORD"  # 密码
     )
 
     # 发送邮件
