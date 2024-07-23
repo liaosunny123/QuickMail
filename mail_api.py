@@ -179,7 +179,7 @@ class EmailClient:
             parts = line.split()
             if len(parts) >= 2:
                 email_offset_id = parts[0]
-                if obj_id == self._pop3_command("UIDL " + email_offset_id).split(" ")[1]:
+                if obj_id == self._pop3_command("UIDL " + email_offset_id).split(" ")[1].strip():
                     return email_offset_id
 
         return ""
