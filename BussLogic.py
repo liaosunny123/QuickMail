@@ -1,14 +1,14 @@
-# from SignInWindow import Ui_Dialog as SignInWindow_Ui
+from PyQt5.QtCore import QThread
+from PyQt5.QtWidgets import QMessageBox
+
 import data_store
 from SigninWindow import Ui_Dialog as SignInWindow_Ui
 from MainWindow import Ui_MainWindow as MainWindow_Ui
 from SubWindow import MyWidget as SubWindow_Ui
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import sys
 
 from mail_api import EmailClient
-import traceback
 from PyQt5.QtGui import QPixmap, QPainter
 from emailDB import *
 
@@ -86,35 +86,28 @@ class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
         # print(base64.b64decode(arr[0].title).decode("utf-8"))
 
 
+class SimpleGetInbox(QThread):
+    def __init__(self, main_win):
+        super(SimpleGetInbox, self).__init__()
+        self.main_win = main_win
+
+    def run(self):
+        arr = self.main_win.client.get_email_list(0, 10)
+        print(arr)
+        for e in arr:
+            self.main_win.listWidget.addItem(e.title)
 
 
-
-class MailServer(Smtp, Pop3):
+class BussLogic(QtWidgets.QMainWindow):
     def __init__(self):
-        self.mail_server = " "
-        self.username = " "
-        self.password = " "
-        self.smtp = None
-        self.pop3 = None
-
-    def info_init(self, mail_server, username, password):
-        self.mail_server = mail_server
-        self.username = username
-        self.password = password
-        try:
-            self.smtp = Smtp(mailserver=mail_server, username=username, password=password)
-            self.pop3 = Pop3(mailserver=mail_server, username=username, password=password)
-        except Exception as e:
-            print(e)
-        else:
-            print(mail_server, username, password)
-
-
-class BussLogic:
-    def __init__(self):
+        super().__init__()
         self.sign_in_window = SignInWindowUi()
-        self.main_window = MainWindowUi()
+        self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
 
+        self.main_window = MainWindowUi()
+        # self.sub_window = SubWindow()
+
+        # 默认账号密码
         self.client = EmailClient(
             "smtp-mail.outlook.com",  # SMTP 服务器地址
             587,  # SMTP 端口
@@ -124,88 +117,40 @@ class BussLogic:
             data_store.PASSWORD  # 密码
         )
 
-        self.sub_window = SubWindow()
-
-        # self.mail_server = MailServer()
-        self.sender_proc = None
-        self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
-        self.main_window.pushButtonSend.clicked.connect(self.click_send)
-        self.main_window.pushButtonSave.clicked.connect(self.click_save)
-        self.main_window.Reflesh_Button.clicked.connect(self.refresh_recv)
-        self.main_window.listWidget.itemClicked.connect(self.show_recv)
-        self.main_window.listWidget_2.itemClicked.connect(self.show_mail)
-        self.main_window.listWidget.itemClicked.connect(self.show_draft)
-        self.main_window.listWidgetDrafts.itemClicked.connect(self.open_draft)
-        self.main_window.pushButtonBackToInbox.clicked.connect(self.compose_to_inbox)
-        self.main_window.pushButtonComposeAnotherEmail.clicked.connect(self.back_to_comp)
-        self.main_window.Delete_Button.clicked.connect(self.delete_mail)
-        self.main_window.Resend_button.clicked.connect(self.resend_butt)
-        user = 'root'
-        password = 'fy'
-        host = 'localhost'
-        database = 'mail'
+        # 读取数据
+        user = data_store.DatabaseConfig.USER
+        password = data_store.DatabaseConfig.PASSWORD
+        host = data_store.DatabaseConfig.HOST
+        database = data_store.DatabaseConfig.DATABASE
         # 创建 EmailDatabase 实例
         self.email_db = EmailDatabase(user=user, password=password, host=host, database=database)
 
-    # 获取草稿
-    def get_draft_mail(self):
-        # arr = self.email_db.get_draft_emails()
-        arr = self.client.get_email_list(0,10)
-        print(arr)
-        for e in arr:
-            if e.folder == 'draft':
-                self.main_window.listWidgetDrafts.addItem(e.title)
-
-    def resend_butt(self):
-        print('111')
-
-    def delete_mail(self):
-        print(self)
-
-    def show_draft(self, item):
-        if item.text() == '草稿箱':
-            self.main_window.listWidgetDrafts.clear()
-            self.get_draft_mail()
-
-    def open_draft(self, item):
-
-        self.main_window.textBrowser_2.setText(msg)
-
-    def compose_to_inbox(self):
-        self.main_window.stacked_widget.setCurrentIndex(1)
-
-    def back_to_comp(self):
-        self.main_window.lineEditTo.clear()
-        self.main_window.lineEditSubject.clear()
-        self.main_window.textEdit.clear()
-        self.main_window.stacked_widget.setCurrentIndex(0)
-
     def click_sign_in(self):
-        self.mail_server = MailServer()
         mail_server_address, username, password = self.sign_in_window.fetch_info()
         if username == "" or password == "":
+            QMessageBox.warning(self, 'Error', '请输入用户名密码')
             return
-        # print(f'{mail_server_address},{username},{password}')
-        self.email_db.login(mail_server_address, username, password)
-        self.mail_server.info_init(mail_server=mail_server_address, username=username, password=password)
-        BussLogic.win_stage = 1
-        self.sign_in_window.close()
+        print(f'{mail_server_address},{username},{password}')
 
-    def click_send(self):
-        print(self)
+        try:
+            self.email_db.login(mail_server_address, username, password)
 
-    def click_save(self):
-        print(self)
+            # 根据输入内容修改客户端
+            self.client = EmailClient(
+                "smtp-mail.outlook.com",  # SMTP 服务器地址
+                587,  # SMTP 端口
+                "outlook.office365.com",  # POP 服务器地址
+                995,  # POP 端口
+                username,  # 用户名
+                password  # 密码
+            )
 
-    def refresh_recv(self):
-        print(self)
-
-    def show_recv(self, item):
-        if item.text() == 'Inbox':
-            print(item)
-
-    def show_mail(self, item):
-        print(item)
+            BussLogic.win_stage = 1
+            self.sign_in_window.close()
+            self.main_window.show()
+        except Exception as e:
+            print(f"Caught an exception: {e}")
+            QMessageBox.warning(self, "提示", f"{e}")
 
 
 class List_item(QtWidgets.QListWidgetItem):
@@ -232,8 +177,7 @@ if __name__ == "__main__":
     buss.sign_in_window.exec()
     # if(BussLogic.win_stage==0):
     #     exit()
-    buss.main_window.show()
 
-    buss.sub_window.show()
+    # buss.sub_window.show()
 
     sys.exit(app.exec_())
