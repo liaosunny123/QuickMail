@@ -209,7 +209,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageCompose">
        <widget class="QLabel" name="labelNewMail">
@@ -529,7 +529,7 @@ p, li { white-space: pre-wrap; }
        <zorder>Reflesh_Button</zorder>
       </widget>
       <widget class="QWidget" name="pageContacts">
-       <widget class="QListWidget" name="listWidget_3">
+       <widget class="QListWidget" name="listWidgetDrafts">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -719,7 +719,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>listWidget_2</tabstop>
   <tabstop>textBrowser</tabstop>
   <tabstop>Delete_Button</tabstop>
-  <tabstop>listWidget_3</tabstop>
+  <tabstop>listWidgetDrafts</tabstop>
   <tabstop>textBrowser_2</tabstop>
   <tabstop>Resend_button</tabstop>
   <tabstop>pushButtonBackToInbox</tabstop>

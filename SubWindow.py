@@ -18,7 +18,7 @@ class MyWidget(QWidget):
         # self.listWidget.addItems(['Item 1', 'Item 2', 'Item 3', 'Item 4'])
         self.listWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.listWidget.customContextMenuRequested.connect(self.showListContextMenu)
-
+        self.listWidget.itemClicked.connect(self.onItemClicked)
         # 右侧富文本编辑器
         self.textEdit = QTextEdit()
         self.textEdit.setAcceptRichText(True)
@@ -58,6 +58,18 @@ class MyWidget(QWidget):
         selectedItem = self.listWidget.currentItem()
         if selectedItem:
             self.listWidget.takeItem(self.listWidget.row(selectedItem))
+
+    def onItemClicked(self, item):
+        # 根据点击的项目更新右侧富文本内容
+        item_text = item.text()
+        if item_text == 'Item 1':
+            self.textEdit.setHtml('<h1 style="color: blue;">这是 Item 1</h1>')
+        elif item_text == 'Item 2':
+            self.textEdit.setHtml('<h1 style="color: red;">这是 Item 2</h1>')
+        elif item_text == 'Item 3':
+            self.textEdit.setHtml('<h1 style="color: purple;">这是 Item 3</h1>')
+        elif item_text == 'Item 4':
+            self.textEdit.setHtml('<h1 style="color: orange;">这是 Item 4</h1>')
 
     # def addItem(self):
     #     text, ok = QInputDialog.getText(self, 'Add Item', 'Enter new item:')

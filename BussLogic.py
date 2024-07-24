@@ -8,7 +8,6 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import sys
 
 from mail_api import EmailClient
-from mailserver import *
 import traceback
 from PyQt5.QtGui import QPixmap, QPainter
 from emailDB import *
@@ -116,18 +115,27 @@ class BussLogic:
         self.sign_in_window = SignInWindowUi()
         self.main_window = MainWindowUi()
 
+        self.client = EmailClient(
+            "smtp-mail.outlook.com",  # SMTP 服务器地址
+            587,  # SMTP 端口
+            "outlook.office365.com",  # POP 服务器地址
+            995,  # POP 端口
+            data_store.USER_NAME,  # 用户名
+            data_store.PASSWORD  # 密码
+        )
+
         self.sub_window = SubWindow()
 
-        self.mail_server = MailServer()
+        # self.mail_server = MailServer()
         self.sender_proc = None
         self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
         self.main_window.pushButtonSend.clicked.connect(self.click_send)
         self.main_window.pushButtonSave.clicked.connect(self.click_save)
-        self.main_window.Reflesh_Button.clicked.connect(self.reflesh_recv)
+        self.main_window.Reflesh_Button.clicked.connect(self.refresh_recv)
         self.main_window.listWidget.itemClicked.connect(self.show_recv)
         self.main_window.listWidget_2.itemClicked.connect(self.show_mail)
         self.main_window.listWidget.itemClicked.connect(self.show_draft)
-        self.main_window.listWidget_3.itemClicked.connect(self.open_draft)
+        self.main_window.listWidgetDrafts.itemClicked.connect(self.open_draft)
         self.main_window.pushButtonBackToInbox.clicked.connect(self.compose_to_inbox)
         self.main_window.pushButtonComposeAnotherEmail.clicked.connect(self.back_to_comp)
         self.main_window.Delete_Button.clicked.connect(self.delete_mail)
@@ -139,55 +147,28 @@ class BussLogic:
         # 创建 EmailDatabase 实例
         self.email_db = EmailDatabase(user=user, password=password, host=host, database=database)
 
+    # 获取草稿
+    def get_draft_mail(self):
+        # arr = self.email_db.get_draft_emails()
+        arr = self.client.get_email_list(0,10)
+        print(arr)
+        for e in arr:
+            if e.folder == 'draft':
+                self.main_window.listWidgetDrafts.addItem(e.title)
+
     def resend_butt(self):
         print('111')
-        uid = self.uid
-        result = sql.SQL.search_sql_by_uid_with_sender(self.mail_server.username, uid, 'Draft')
-        mail = Mail()
-        mail.sender = result[0][0]
-        mail.receiver = result[0][1]
-        mail.topic = result[0][2]
-        mail.uid = result[0][3]
-        self.mail_server.smtp.mail = mail
-        self.mail_server.smtp.path = "C:\\MailServer\\Draft"
-        no = self.mail_server.smtp.sendmail()
-        if (no == errno):
-            self.main_window.close()
-            self.sign_in_window.exec()
-        sql.SQL.delete_sql(uid, 'Draft')
-        os.remove("C:\\MailServer\\Draft\\" + uid + '.txt')
-        self.main_window.display_subpage(3)
 
     def delete_mail(self):
-        uid = self.uid
-        result = sql.SQL.search_sql_by_uid(self.mail_server.username, uid, 'Mail')
-        index = result[0][4]
-        self.mail_server.pop3.recvmail('DELE', index)
-        self.reflesh_recv()
+        print(self)
 
     def show_draft(self, item):
-        if (item.text() == 'Drafts'):
-            self.main_window.listWidget_3.clear()
-            recvaddr = self.mail_server.username
-            dbtuple = sql.SQL.show_tables()
-            dblist = ''
-            for i in dbtuple:
-                dblist += i[0]
-            if (dblist.find('draft') == -1):
-                sql.SQL.create_sql('Draft')
-            recvtuple = sql.SQL.search_sql_by_sender(recvaddr, 'Draft')
-            if (recvtuple == None):
-                return
-            for t in recvtuple:
-                tmp = List_item(t[2], t[0], t[3], t[4])
-                self.main_window.listWidget_3.addItem(tmp)
-                self.main_window.listWidget_3.setItemWidget(tmp, tmp.widgit)
+        if item.text() == '草稿箱':
+            self.main_window.listWidgetDrafts.clear()
+            self.get_draft_mail()
 
     def open_draft(self, item):
-        uid = item.uid
-        self.uid = uid
-        f = open('C:\\MailServer\\Draft\\' + uid + '.txt')
-        msg = f.read()
+
         self.main_window.textBrowser_2.setText(msg)
 
     def compose_to_inbox(self):
@@ -202,7 +183,7 @@ class BussLogic:
     def click_sign_in(self):
         self.mail_server = MailServer()
         mail_server_address, username, password = self.sign_in_window.fetch_info()
-        if (username == "" or password == ""):
+        if username == "" or password == "":
             return
         # print(f'{mail_server_address},{username},{password}')
         self.email_db.login(mail_server_address, username, password)
@@ -211,74 +192,20 @@ class BussLogic:
         self.sign_in_window.close()
 
     def click_send(self):
-        self.sender_proc = Sender_proc(sender=self.mail_server.username,
-                                       receiver=self.main_window.lineEditTo.text(),
-                                       subject=self.main_window.lineEditSubject.text(),
-                                       message=self.main_window.textEdit.toPlainText())
-        mail = self.sender_proc.gene_mailclass()
-        self.sender_proc.store()
-        self.mail_server.smtp.mail = mail
-        self.mail_server.smtp.path = "C:\\MailServer\\Draft"
-        no = self.mail_server.smtp.sendmail()
-        if (no == errno):
-            self.main_window.close()
-            self.sign_in_window.exec()
-        self.main_window.display_subpage(3)
+        print(self)
 
     def click_save(self):
-        self.sender_proc = Sender_proc(sender=self.mail_server.username,
-                                       receiver=self.main_window.lineEditTo.text(),
-                                       subject=self.main_window.lineEditSubject.text(),
-                                       message=self.main_window.textEdit.toPlainText())
-        mail = self.sender_proc.gene_mailclass()
-        self.sender_proc.store()
-        sql.SQL.add_sql(mail.sender, mail.receiver, mail.topic, mail.uid, 0, 'Draft')
+        print(self)
 
-    def trans_info(self):
-        mail_server_address, username, password = self.sign_in_window.fetch_info()
-        self.mail_server.info_init(mail_server_address, username, password)
-
-    def reflesh_recv(self):
-        self.main_window.listWidget_2.clear()
-        self.mail_server.pop3.recvmail('LIST', 0)
-        recvaddr = self.mail_server.username
-        recvtuple = sql.SQL.search_sql(recvaddr, 'Mail')
-        if (recvtuple == None):
-            return
-        for t in recvtuple:
-            tmp = List_item(t[2], t[0], t[3], t[4])
-            self.main_window.listWidget_2.addItem(tmp)
-            self.main_window.listWidget_2.setItemWidget(tmp, tmp.widgit)
+    def refresh_recv(self):
+        print(self)
 
     def show_recv(self, item):
-        if (item.text() == 'Inbox'):
-            self.main_window.listWidget_2.clear()
-            recvaddr = self.mail_server.username
-            dbtuple = sql.SQL.show_tables()
-            dblist = ''
-            for i in dbtuple:
-                dblist += i[0]
-            if (dblist.find('mail') == -1):
-                sql.SQL.create_sql('Mail')
-            recvtuple = sql.SQL.search_sql(recvaddr, 'Mail')
-            if (recvtuple == None):
-                return
-            for t in recvtuple:
-                tmp = List_item(t[2], t[0], t[3], t[4])
-                self.main_window.listWidget_2.addItem(tmp)
-                self.main_window.listWidget_2.setItemWidget(tmp, tmp.widgit)
+        if item.text() == 'Inbox':
+            print(item)
 
     def show_mail(self, item):
-        uid = item.uid
-        self.uid = uid
-        if (not os.path.exists('C:\\MailServer\\' + uid + '.txt')):
-            self.mail_server.pop3.recvmail('RETR', item.index)
-        f = open('C:\\MailServer\\' + uid + '.txt')
-        msg = f.read()
-        try:
-            self.main_window.textBrowser.setText(msg)
-        except Exception as e:
-            print(e)
+        print(item)
 
 
 class List_item(QtWidgets.QListWidgetItem):
