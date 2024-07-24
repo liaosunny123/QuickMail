@@ -20,7 +20,7 @@ if __name__ == "__main__":
     )
 
     # 获取邮件列表
-    email_list = client.get_email_list(offset=1, limit=11)
+    email_list = client.get_email_list(offset=1, limit=13)
     print("服务端第1～11封邮件是:", email_list)
 
     # 获取特定邮件内容
