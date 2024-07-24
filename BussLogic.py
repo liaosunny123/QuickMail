@@ -76,8 +76,13 @@ class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
         )
 
         arr = client.get_email_list(0, 10)
-
         print(arr)
+
+        # print(arr[0].title)
+        # print(base64.b64decode(arr[0].title).decode("utf-8"))
+
+
+
 
 
 class MailServer(Smtp, Pop3):
