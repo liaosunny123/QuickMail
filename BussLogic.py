@@ -78,6 +78,11 @@ class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
         arr = client.get_email_list(0, 10)
         print(arr)
 
+        for e in arr:
+            self.listWidget.addItem(e.title)
+
+        self.textEdit.setHtml(arr[0].title)
+
         # print(arr[0].title)
         # print(base64.b64decode(arr[0].title).decode("utf-8"))
 

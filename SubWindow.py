@@ -9,13 +9,13 @@ class MyWidget(QWidget):
 
     def initUI(self):
         self.setGeometry(300, 300, 600, 400)
-        self.setWindowTitle('Right-click menu with Rich Text')
+        self.setWindowTitle('Test Window')
 
         layout = QHBoxLayout()
 
         # 左侧列表
         self.listWidget = QListWidget()
-        self.listWidget.addItems(['Item 1', 'Item 2', 'Item 3', 'Item 4'])
+        # self.listWidget.addItems(['Item 1', 'Item 2', 'Item 3', 'Item 4'])
         self.listWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.listWidget.customContextMenuRequested.connect(self.showListContextMenu)
 
@@ -31,12 +31,16 @@ class MyWidget(QWidget):
     def showListContextMenu(self, pos: QPoint):
         contextMenu = QMenu(self)
 
-        newAct = QAction('New', self)
-        newAct.triggered.connect(self.addItem)
-        contextMenu.addAction(newAct)
+        # newAct = QAction('New', self)
+        # newAct.triggered.connect(self.addItem)
+        # contextMenu.addAction(newAct)
 
-        openAct = QAction('Open', self)
-        contextMenu.addAction(openAct)
+        # openAct = QAction('Open', self)
+        # contextMenu.addAction(openAct)
+
+
+        refreshAct = QAction('Refresh', self)
+        contextMenu.addAction(refreshAct)
 
         selectedItem = self.listWidget.itemAt(pos)
         if selectedItem:
@@ -55,10 +59,10 @@ class MyWidget(QWidget):
         if selectedItem:
             self.listWidget.takeItem(self.listWidget.row(selectedItem))
 
-    def addItem(self):
-        text, ok = QInputDialog.getText(self, 'Add Item', 'Enter new item:')
-        if ok and text:
-            self.listWidget.addItem(text)
+    # def addItem(self):
+    #     text, ok = QInputDialog.getText(self, 'Add Item', 'Enter new item:')
+    #     if ok and text:
+    #         self.listWidget.addItem(text)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
