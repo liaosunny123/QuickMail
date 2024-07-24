@@ -27,6 +27,11 @@ class Email:
     def __repr__(self):
         return f"<Email(title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
 
+    def __eq__(self, other):
+        if isinstance(other, Email):
+            return self.obj_id == other.obj_id
+
+        return False
 
 class EmailClient:
     def __init__(self, smtp_server, smtp_port, pop_server, pop_port, username, password):

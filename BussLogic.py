@@ -1,3 +1,5 @@
+from typing import List
+
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QMessageBox
 
@@ -87,15 +89,36 @@ class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
 
 
 class SimpleGetInbox(QThread):
-    def __init__(self, main_win):
+    def __init__(self, main_win: MainWindowUi, email_db: EmailDatabase):
         super(SimpleGetInbox, self).__init__()
         self.main_win = main_win
+        self.email_db = email_db
+
 
     def run(self):
-        arr = self.main_win.client.get_email_list(0, 10)
-        print(arr)
-        for e in arr:
-            self.main_win.listWidget.addItem(e.title)
+        try:
+            self.main_win.listWidgetInbox.clear()
+
+            # 从数据库获取收件箱邮件
+            emails_from_db = self.email_db.get_inbox()
+            print(emails_from_db)
+            for elem in emails_from_db:
+                self.main_win.listWidgetInbox.addItem(elem.title)
+
+            # 网络可用则再从网络获取邮件
+            emails_from_net:List[Email] = self.main_win.client.get_email_list(0, 10)
+            for elem in emails_from_net:
+                if elem in emails_from_db:
+                    continue
+
+                # 新邮件加到数据库
+                self.email_db.add_email(elem)
+
+                # 加到列表中
+                self.main_win.listWidgetInbox.addItem(elem.title)
+
+        except Exception as e:
+            print(e)
 
 
 class BussLogic(QtWidgets.QMainWindow):
@@ -105,10 +128,12 @@ class BussLogic(QtWidgets.QMainWindow):
         self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
 
         self.main_window = MainWindowUi()
+        self.main_window.listWidget.itemClicked.connect(self.change_folder)
+        self.main_window.listWidgetInbox.addItem('111')
         # self.sub_window = SubWindow()
 
         # 默认账号密码
-        self.client = EmailClient(
+        self.main_window.client = EmailClient(
             "smtp-mail.outlook.com",  # SMTP 服务器地址
             587,  # SMTP 端口
             "outlook.office365.com",  # POP 服务器地址
@@ -125,6 +150,14 @@ class BussLogic(QtWidgets.QMainWindow):
         # 创建 EmailDatabase 实例
         self.email_db = EmailDatabase(user=user, password=password, host=host, database=database)
 
+        self.inboxGetter = SimpleGetInbox(self.main_window, self.email_db)
+
+    def change_folder(self, item):
+        print(item.text())
+        if item.text() == '收信箱':
+            # 启动线程运行任务
+            self.inboxGetter.start()
+
     def click_sign_in(self):
         mail_server_address, username, password = self.sign_in_window.fetch_info()
         if username == "" or password == "":
@@ -136,14 +169,14 @@ class BussLogic(QtWidgets.QMainWindow):
             self.email_db.login(mail_server_address, username, password)
 
             # 根据输入内容修改客户端
-            self.client = EmailClient(
-                "smtp-mail.outlook.com",  # SMTP 服务器地址
-                587,  # SMTP 端口
-                "outlook.office365.com",  # POP 服务器地址
-                995,  # POP 端口
-                username,  # 用户名
-                password  # 密码
-            )
+            # self.client = EmailClient(
+            #     "smtp-mail.outlook.com",  # SMTP 服务器地址
+            #     587,  # SMTP 端口
+            #     "outlook.office365.com",  # POP 服务器地址
+            #     995,  # POP 端口
+            #     username,  # 用户名
+            #     password  # 密码
+            # )
 
             BussLogic.win_stage = 1
             self.sign_in_window.close()
