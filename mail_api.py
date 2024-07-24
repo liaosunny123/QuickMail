@@ -139,7 +139,7 @@ class EmailClient:
                 header_dict.get('To', '').split(" ")) == 2 else header_dict.get('To', ''),
             title=self._decode_mime_words(header_dict.get('Subject', '')),
             body='',
-            timestamp=datetime.strptime(header_dict.get('Date', '').split("+")[0].strip(), "%a, %d %b %Y %H:%M:%S"),
+            timestamp=datetime.strptime(header_dict.get('Date', '').split("+")[0].strip().split("-")[0].strip(), "%a, %d %b %Y %H:%M:%S"),
             offset_id=-1,
             header_dict=header_dict
         )
