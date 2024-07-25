@@ -130,6 +130,7 @@ class BussLogic(QtWidgets.QMainWindow):
         self.main_window = MainWindowUi()
         self.main_window.listWidget.itemClicked.connect(self.change_folder)
         self.main_window.listWidgetInbox.addItem('111')
+
         # self.sub_window = SubWindow()
 
         # 默认账号密码
@@ -157,6 +158,31 @@ class BussLogic(QtWidgets.QMainWindow):
         if item.text() == '收信箱':
             # 启动线程运行任务
             self.inboxGetter.start()
+
+    def click_send(self):
+        subject = self.lineEditSubject.text()
+        to_address = self.lineEditTo.text()
+        cc_addresses = self.lineEditTo_2.text().split(
+            ',') if self.lineEditTo_2.text() else []  # Assuming comma separated CC addresses
+        body = self.textEdit.toPlainText()
+
+        if not to_address or not subject or not body:
+            QMessageBox.warning(self, 'Error', '请填写完整的邮件信息')
+            return
+
+        try:
+            success = self.main_window.client.send_email(to_address, subject, body, cc_addresses)
+            if success:
+                QMessageBox.information(self, 'Success', '邮件发送成功')
+            else:
+                QMessageBox.warning(self, 'Error', '邮件发送失败')
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'邮件发送失败: {str(e)}')
+
+
+
+
+
 
     def click_sign_in(self):
         mail_server_address, username, password = self.sign_in_window.fetch_info()

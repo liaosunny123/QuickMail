@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from richText import RichTextWidget
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -154,13 +154,11 @@ class Ui_MainWindow(object):
         self.lineEditSubject.setFont(font)
         self.lineEditSubject.setText("")
         self.lineEditSubject.setObjectName("lineEditSubject")
-        self.textEdit = QtWidgets.QTextEdit(self.pageCompose)
-        self.textEdit.setGeometry(QtCore.QRect(10, 160, 801, 451))
-        font = QtGui.QFont()
-        font.setFamily("Microsoft YaHei UI")
-        font.setPointSize(10)
-        self.textEdit.setFont(font)
-        self.textEdit.setObjectName("textEdit")
+
+        self.rich_text_widget = RichTextWidget(self.pageCompose)
+        self.rich_text_widget.setGeometry(QtCore.QRect(10, 160, 801, 451))
+        self.rich_text_widget.setObjectName("richTextWidget")
+
         self.pushButtonSend = QtWidgets.QPushButton(self.pageCompose)
         self.pushButtonSend.setGeometry(QtCore.QRect(290, 620, 71, 41))
         font = QtGui.QFont()
@@ -243,6 +241,7 @@ class Ui_MainWindow(object):
         self.listWidget_4.raise_()
         self.Reflesh_Button.raise_()
         self.stackedWidget.addWidget(self.pageInbox)
+
         self.pageContacts = QtWidgets.QWidget()
         self.pageContacts.setObjectName("pageContacts")
         self.listWidgetDrafts = QtWidgets.QListWidget(self.pageContacts)
@@ -286,7 +285,7 @@ class Ui_MainWindow(object):
         self.label.setPixmap(QtGui.QPixmap("image/EmailSentIcon.png"))
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.pageEmailSent)
-        self.label_2.setGeometry(QtCore.QRect(300, 190, 161, 41))
+        self.label_2.setGeometry(QtCore.QRect(320, 200, 121, 41))
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(14)
@@ -308,22 +307,14 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.pushButtonComposeAnotherEmail.setFont(font)
         self.pushButtonComposeAnotherEmail.setObjectName("pushButtonComposeAnotherEmail")
-        self.label_3 = QtWidgets.QLabel(self.pageEmailSent)
-        self.label_3.setGeometry(QtCore.QRect(250, 240, 441, 21))
-        font = QtGui.QFont()
-        font.setFamily("Microsoft YaHei UI Light")
-        font.setPointSize(10)
-        self.label_3.setFont(font)
-        self.label_3.setObjectName("label_3")
         self.stackedWidget.addWidget(self.pageEmailSent)
         self.horizontalLayout.addWidget(self.stackedWidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.lineEditTo, self.lineEditSubject)
-        MainWindow.setTabOrder(self.lineEditSubject, self.textEdit)
-        MainWindow.setTabOrder(self.textEdit, self.pushButtonSend)
+        MainWindow.setTabOrder(self.lineEditSubject, self.pushButtonSend)
         MainWindow.setTabOrder(self.pushButtonSend, self.pushButtonSave)
         MainWindow.setTabOrder(self.pushButtonSave, self.listWidget_4)
         MainWindow.setTabOrder(self.listWidget_4, self.Reflesh_Button)
@@ -375,4 +366,3 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "邮件成功发送"))
         self.pushButtonBackToInbox.setText(_translate("MainWindow", "回到收信箱"))
         self.pushButtonComposeAnotherEmail.setText(_translate("MainWindow", "编写另一封邮件"))
-        self.label_3.setText(_translate("MainWindow", "邮件已发送并保存至\"sent\"文件夹中"))
