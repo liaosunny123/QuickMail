@@ -47,12 +47,14 @@ class SignInWindowUi(SignInWindow_Ui, QtWidgets.QDialog):
 
 
 class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, email_db:EmailDatabase):
         super(MainWindowUi, self).__init__()
         self.setupUi(self)
         self.list_widget = self.listWidget
         self.stacked_widget = self.stackedWidget
         self.listWidgetInbox = self.listWidgetInbox
+
+        self.email_db = email_db
 
         # self.main_window.listWidgetInbox.addItem('111')
         # self.listWidgetInbox = CoverageListWidget()
@@ -71,8 +73,9 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         # newAct.triggered.connect(self.addItem)
         # contextMenu.addAction(newAct)
 
-        openAct = QAction('刷新', self)
-        contextMenu.addAction(openAct)
+        refresh_act = QAction('刷新', self)
+        refresh_act.triggered.connect(self.refreshList)
+        contextMenu.addAction(refresh_act)
 
         selectedItem = self.listWidgetInbox.itemAt(pos)
         if selectedItem:
@@ -85,6 +88,10 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         quitAct.triggered.connect(QApplication.quit)
 
         contextMenu.exec_(self.listWidgetInbox.mapToGlobal(pos))
+
+
+    def refreshList(self):
+        self.email_db.get_all_emails()
 
     def deleteItem(self):
         selectedItem = self.listWidgetInbox.currentItem()
@@ -236,10 +243,6 @@ class BussLogic(QtWidgets.QMainWindow):
         self.sign_in_window = SignInWindowUi()
         self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
 
-        self.main_window = MainWindowUi()
-        self.main_window.listWidget.itemClicked.connect(self.change_folder)
-        # self.sub_window = SubWindow()
-
         # 默认账号密码
         self.main_window.client = EmailClient(
             "smtp-mail.outlook.com",  # SMTP 服务器地址
@@ -257,6 +260,10 @@ class BussLogic(QtWidgets.QMainWindow):
         database = data_store.DatabaseConfig.DATABASE
         # 创建 EmailDatabase 实例
         self.email_db = EmailDatabase(user=user, password=password, host=host, database=database)
+
+        self.main_window = MainWindowUi(self.email_db)
+        self.main_window.listWidget.itemClicked.connect(self.change_folder)
+        # self.sub_window = SubWindow()
 
         self.inboxGetter = SimpleGetInbox(self.main_window, self.email_db)
 
