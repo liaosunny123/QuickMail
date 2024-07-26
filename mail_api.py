@@ -154,8 +154,8 @@ class EmailClient:
         headers, body = raw_email.split('\r\n\r\n', 1)
         email = self._parse_headers(headers)
 
-        def decode_base64(encoded_text):
-            return base64.b64decode(encoded_text).decode('utf-8')
+        def decode_base64(encoded_text, decoded_charset="utf-8"):
+            return base64.b64decode(encoded_text).decode(decoded_charset)
 
         content_type: str = email.header_dict["Content-Type"]
 
@@ -171,14 +171,24 @@ class EmailClient:
             header = body_seg[0].strip("\r\n")
             header_dict = self._parse_header_in_dict(header)
             body_part_content_type = header_dict["Content-Type"].strip().split(";")[0]
-            if body_part_content_type == "text/plain" and not fetch_html:
-                for seg in body_seg[1:]:
-                    email.body += decode_base64(seg)
-            elif body_part_content_type == "text/html" and fetch_html:
-                for seg in body_seg[1:]:
-                    email.body += decode_base64(seg)
-                break
+            charset = header_dict["Content-Type"].strip().split(";")[1].split("=")[1].strip('"')
+            encoded_type = header_dict["Content-Transfer-Encoding"]
+            if body_part_content_type == "text/plain" and fetch_html:
+                continue
+            elif body_part_content_type == "text/html" and not fetch_html:
+                continue
 
+            for seg in body_seg[1:]:
+                if encoded_type == "quoted-printable":
+                    email.body += quopri.decodestring(seg.replace("=\r\n", "").replace("=\n", "")).decode(charset)
+                elif encoded_type == "base64":
+                    email.body += decode_base64(seg, decoded_charset=charset)
+                elif encoded_type == "7bit" or encoded_type == "8bit":
+                    email.body += seg
+                elif encoded_type == "binary":
+                    email.body += seg
+                else:
+                    email.body += decode_base64(seg)
         email.body = email.body.strip()
         return email
 

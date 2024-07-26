@@ -118,7 +118,7 @@ class EmailDatabase:
     def _create_user_tables(self, username):
         with self.engine.connect() as conn:
             conn.execute(text(f"""
-                CREATE TABLE {username}_emails (
+                CREATE TABLE IF NOT EXISTS {username}_emails (
                     obj_id VARCHAR(255) PRIMARY KEY,
                     sender VARCHAR(255) NOT NULL,
                     receiver VARCHAR(255) NOT NULL,
