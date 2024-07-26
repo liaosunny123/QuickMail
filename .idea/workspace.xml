@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="update: inbox界面" />
+    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="update: inbox界面">
+      <change beforePath="$PROJECT_DIR$/BussLogic.py" beforeDir="false" afterPath="$PROJECT_DIR$/BussLogic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_store.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_store.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/richText.py" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -233,7 +238,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QuickMail$mail_test.coverage" NAME="mail_test 覆盖结果" MODIFIED="1721735115164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuickMail_Test$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1721970544305" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMail_Test$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1721971583606" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QuickMail$mail_api.coverage" NAME="mail_api 覆盖结果" MODIFIED="1721735109423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

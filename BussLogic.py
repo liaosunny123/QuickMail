@@ -244,16 +244,6 @@ class BussLogic(QtWidgets.QMainWindow):
         self.sign_in_window = SignInWindowUi()
         self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
 
-        # 默认账号密码
-        self.main_window.client = EmailClient(
-            "smtp-mail.outlook.com",  # SMTP 服务器地址
-            587,  # SMTP 端口
-            "outlook.office365.com",  # POP 服务器地址
-            995,  # POP 端口
-            data_store.USER_NAME,  # 用户名
-            data_store.PASSWORD  # 密码
-        )
-
         # 读取数据
         user = data_store.DatabaseConfig.USER
         password = data_store.DatabaseConfig.PASSWORD
@@ -264,6 +254,16 @@ class BussLogic(QtWidgets.QMainWindow):
 
         self.main_window = MainWindowUi(self.email_db)
         self.main_window.listWidget.itemClicked.connect(self.change_folder)
+
+        # 默认账号密码
+        self.main_window.client = EmailClient(
+            "smtp-mail.outlook.com",  # SMTP 服务器地址
+            587,  # SMTP 端口
+            "outlook.office365.com",  # POP 服务器地址
+            995,  # POP 端口
+            data_store.USER_NAME,  # 用户名
+            data_store.PASSWORD  # 密码
+        )
         # self.sub_window = SubWindow()
 
         self.inboxGetter = SimpleGetInbox(self.main_window, self.email_db)

@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from richText import RichTextWidget
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -154,11 +154,6 @@ class Ui_MainWindow(object):
         self.lineEditSubject.setFont(font)
         self.lineEditSubject.setText("")
         self.lineEditSubject.setObjectName("lineEditSubject")
-
-        self.rich_text_widget = RichTextWidget(self.pageCompose)
-        self.rich_text_widget.setGeometry(QtCore.QRect(10, 160, 801, 451))
-        self.rich_text_widget.setObjectName("richTextWidget")
-
         self.pushButtonSend = QtWidgets.QPushButton(self.pageCompose)
         self.pushButtonSend.setGeometry(QtCore.QRect(290, 620, 71, 41))
         font = QtGui.QFont()
@@ -241,7 +236,6 @@ class Ui_MainWindow(object):
         self.listWidget_4.raise_()
         self.Reflesh_Button.raise_()
         self.stackedWidget.addWidget(self.pageInbox)
-
         self.pageContacts = QtWidgets.QWidget()
         self.pageContacts.setObjectName("pageContacts")
         self.listWidgetDrafts = QtWidgets.QListWidget(self.pageContacts)
