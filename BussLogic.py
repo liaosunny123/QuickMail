@@ -47,7 +47,7 @@ class SignInWindowUi(SignInWindow_Ui, QtWidgets.QDialog):
 
 
 class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
-    def __init__(self, email_db:EmailDatabase):
+    def __init__(self, email_db: EmailDatabase):
         super(MainWindowUi, self).__init__()
         self.setupUi(self)
         self.list_widget = self.listWidget
@@ -55,6 +55,20 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.listWidgetInbox = self.listWidgetInbox
 
         self.email_db = email_db
+
+        # 默认账号密码
+        self.client = EmailClient(
+            "smtp-mail.outlook.com",  # SMTP 服务器地址
+            587,  # SMTP 端口
+            "outlook.office365.com",  # POP 服务器地址
+            995,  # POP 端口
+            data_store.USER_NAME,  # 用户名
+            data_store.PASSWORD  # 密码
+        )
+        # self.sub_window = SubWindow()
+
+        self.inboxGetter = SimpleGetInbox(self, self.email_db)
+        self.listWidget.itemClicked.connect(self.change_folder)
 
         # self.main_window.listWidgetInbox.addItem('111')
         # self.listWidgetInbox = CoverageListWidget()
@@ -64,7 +78,15 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.listWidgetInbox.customContextMenuRequested.connect(self.showListContextMenu)
         self.listWidgetInbox.itemClicked.connect(self.onItemClicked)
 
+        self.textBrowser.setHtml('<h1 style="color: green;">选一个邮件查看内容</h1>')
+
         self.change_stacked_widget()
+
+    def change_folder(self, item):
+        print(item.text())
+        if item.text() == '收信箱':
+            # 启动线程运行任务
+            self.inboxGetter.start()
 
     def showListContextMenu(self, pos: QPoint):
         contextMenu = QMenu(self)
@@ -89,9 +111,9 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
         contextMenu.exec_(self.listWidgetInbox.mapToGlobal(pos))
 
-
     def refreshList(self):
-        self.email_db.get_all_emails()
+        # self.email_db.get_all_emails()
+        self.inboxGetter.start()
 
     def deleteItem(self):
         selectedItem = self.listWidgetInbox.currentItem()
@@ -146,7 +168,6 @@ class SimpleGetInbox(QThread):
         self.main_win = main_win
         self.email_db = email_db
 
-
     def run(self):
         try:
             self.main_win.listWidgetInbox.clear()
@@ -172,8 +193,8 @@ class SimpleGetInbox(QThread):
                 # 加到列表中
                 # self.main_win.listWidgetInbox.addItem(elem.title)
                 # self.main_win.listWidgetInbox.setData(Qt.UserRole, elem)
-
         except Exception as e:
+            # QMessageBox.warning(self.main_win, "出错", f'出错了：{e}')
             print(e)
 
 
@@ -253,26 +274,6 @@ class BussLogic(QtWidgets.QMainWindow):
         self.email_db = EmailDatabase(user=user, password=password, host=host, database=database)
 
         self.main_window = MainWindowUi(self.email_db)
-        self.main_window.listWidget.itemClicked.connect(self.change_folder)
-
-        # 默认账号密码
-        self.main_window.client = EmailClient(
-            "smtp-mail.outlook.com",  # SMTP 服务器地址
-            587,  # SMTP 端口
-            "outlook.office365.com",  # POP 服务器地址
-            995,  # POP 端口
-            data_store.USER_NAME,  # 用户名
-            data_store.PASSWORD  # 密码
-        )
-        # self.sub_window = SubWindow()
-
-        self.inboxGetter = SimpleGetInbox(self.main_window, self.email_db)
-
-    def change_folder(self, item):
-        print(item.text())
-        if item.text() == '收信箱':
-            # 启动线程运行任务
-            self.inboxGetter.start()
 
     def click_sign_in(self):
         mail_server_address, username, password = self.sign_in_window.fetch_info()
@@ -300,23 +301,6 @@ class BussLogic(QtWidgets.QMainWindow):
         except Exception as e:
             print(f"Caught an exception: {e}")
             QMessageBox.warning(self, "提示", f"{e}")
-
-
-# class List_item(QtWidgets.QListWidgetItem):
-#     def __init__(self, subject, sender, uid, index):
-#         super().__init__()
-#         self.uid = uid
-#         self.index = index
-#         self.widgit = QtWidgets.QWidget()
-#         self.subject_label = QtWidgets.QLabel()
-#         self.subject_label.setText(subject)
-#         self.sender_label = QtWidgets.QLabel()
-#         self.sender_label.setText(sender)
-#         self.hbox = QtWidgets.QVBoxLayout()
-#         self.hbox.addWidget(self.sender_label)
-#         self.hbox.addWidget(self.subject_label)
-#         self.widgit.setLayout(self.hbox)
-#         self.setSizeHint(self.widgit.sizeHint())
 
 
 if __name__ == "__main__":
