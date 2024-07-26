@@ -209,7 +209,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageCompose">
        <widget class="QLabel" name="labelNewMail">
@@ -433,52 +433,6 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="Reflesh_Button">
-        <property name="geometry">
-         <rect>
-          <x>240</x>
-          <y>0</y>
-          <width>40</width>
-          <height>40</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>image/refresh2.png</normaloff>image/refresh2.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>40</width>
-          <height>40</height>
-         </size>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="Delete_Button">
-        <property name="geometry">
-         <rect>
-          <x>770</x>
-          <y>620</y>
-          <width>40</width>
-          <height>40</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>image/TRASH BIN.png</normaloff>image/TRASH BIN.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>40</width>
-          <height>40</height>
-         </size>
-        </property>
-       </widget>
        <widget class="QListWidget" name="listWidget_4">
         <property name="geometry">
          <rect>
@@ -490,7 +444,7 @@ p, li { white-space: pre-wrap; }
         </property>
         <item>
          <property name="text">
-          <string>Inbox</string>
+          <string>收信箱</string>
          </property>
          <property name="font">
           <font>
@@ -506,11 +460,6 @@ p, li { white-space: pre-wrap; }
          </property>
         </item>
        </widget>
-       <zorder>listWidgetInbox</zorder>
-       <zorder>inboxTextBrowser</zorder>
-       <zorder>Delete_Button</zorder>
-       <zorder>listWidget_4</zorder>
-       <zorder>Reflesh_Button</zorder>
       </widget>
       <widget class="QWidget" name="pageDrafts">
        <widget class="QListWidget" name="listWidgetDrafts">
@@ -574,7 +523,7 @@ p, li { white-space: pre-wrap; }
         </property>
         <item>
          <property name="text">
-          <string>Drafts</string>
+          <string>草稿箱</string>
          </property>
          <property name="font">
           <font>
@@ -679,10 +628,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButtonSend</tabstop>
   <tabstop>pushButtonSave</tabstop>
   <tabstop>listWidget_4</tabstop>
-  <tabstop>Reflesh_Button</tabstop>
   <tabstop>listWidgetInbox</tabstop>
   <tabstop>inboxTextBrowser</tabstop>
-  <tabstop>Delete_Button</tabstop>
   <tabstop>listWidgetDrafts</tabstop>
   <tabstop>draftsTextBrowser</tabstop>
   <tabstop>Resend_button</tabstop>
