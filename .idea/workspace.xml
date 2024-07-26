@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="update: 继承QThread实现异步数据处理">
+    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="update: 实现获取收件箱邮件并添加到数据库">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BussLogic.py" beforeDir="false" afterPath="$PROJECT_DIR$/BussLogic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainWindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,9 +34,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="PerforceDirect.Settings">
-    <option name="CHARSET" value="无" />
-  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;For-December&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/liaosunny123/QuickMail.git&quot;,
+    &quot;accountId&quot;: &quot;d1d04b4a-8733-4ac5-b167-e26a45eda14f&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -123,6 +130,8 @@
       <workItem from="1721733845235" duration="1058000" />
       <workItem from="1721738504542" duration="67000" />
       <workItem from="1721738582354" duration="1786000" />
+      <workItem from="1721896905349" duration="799000" />
+      <workItem from="1721965372327" duration="5126000" />
     </task>
     <task id="LOCAL-00001" summary="update: 添加一个测试用的子窗口">
       <option name="closed" value="true" />
@@ -172,7 +181,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721840162337</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="update: 实现获取收件箱邮件并添加到数据库">
+      <option name="closed" value="true" />
+      <created>1721842832187</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1721842832187</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,11 +213,12 @@
     <MESSAGE value="update: 刷新和删除" />
     <MESSAGE value="update: 删除不必要的文件" />
     <MESSAGE value="update: 继承QThread实现异步数据处理" />
-    <option name="LAST_COMMIT_MESSAGE" value="update: 继承QThread实现异步数据处理" />
+    <MESSAGE value="update: 实现获取收件箱邮件并添加到数据库" />
+    <option name="LAST_COMMIT_MESSAGE" value="update: 实现获取收件箱邮件并添加到数据库" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QuickMail$mail_test.coverage" NAME="mail_test 覆盖结果" MODIFIED="1721735115164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuickMail_Test$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1721842185494" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMail_Test$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1721970481733" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QuickMail$mail_api.coverage" NAME="mail_api 覆盖结果" MODIFIED="1721735109423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -1,7 +1,8 @@
 from typing import List
 
-from PyQt5.QtCore import QThread
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QThread, Qt, QRect, QPoint
+from PyQt5.QtWidgets import QMessageBox, QStyledItemDelegate, QStyle, QListWidget, QListWidgetItem, QMenu, QAction, \
+    QApplication
 
 import data_store
 from SigninWindow import Ui_Dialog as SignInWindow_Ui
@@ -11,7 +12,7 @@ from PyQt5 import QtWidgets
 import sys
 
 from mail_api import EmailClient
-from PyQt5.QtGui import QPixmap, QPainter
+from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont
 from emailDB import *
 
 
@@ -51,7 +52,51 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.setupUi(self)
         self.list_widget = self.listWidget
         self.stacked_widget = self.stackedWidget
+        self.listWidgetInbox = self.listWidgetInbox
+
+        # self.main_window.listWidgetInbox.addItem('111')
+        # self.listWidgetInbox = CoverageListWidget()
+        self.listWidgetInbox.setItemDelegate(EmailDelegate())
+
+        self.listWidgetInbox.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.listWidgetInbox.customContextMenuRequested.connect(self.showListContextMenu)
+        self.listWidgetInbox.itemClicked.connect(self.onItemClicked)
+
         self.change_stacked_widget()
+
+    def showListContextMenu(self, pos: QPoint):
+        contextMenu = QMenu(self)
+
+        # newAct = QAction('New', self)
+        # newAct.triggered.connect(self.addItem)
+        # contextMenu.addAction(newAct)
+
+        openAct = QAction('刷新', self)
+        contextMenu.addAction(openAct)
+
+        selectedItem = self.listWidgetInbox.itemAt(pos)
+        if selectedItem:
+            deleteAct = QAction('删除', self)
+            deleteAct.triggered.connect(self.deleteItem)
+            contextMenu.addAction(deleteAct)
+
+        quitAct = QAction('退出', self)
+        contextMenu.addAction(quitAct)
+        quitAct.triggered.connect(QApplication.quit)
+
+        contextMenu.exec_(self.listWidgetInbox.mapToGlobal(pos))
+
+    def deleteItem(self):
+        selectedItem = self.listWidgetInbox.currentItem()
+        if selectedItem:
+            self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
+
+    def onItemClicked(self, item: QListWidgetItem):
+        # print(item)
+        email: Email = item.data(Qt.UserRole)
+        # print(email)
+        if email:
+            self.textBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
 
     def change_stacked_widget(self):
         self.list_widget.currentRowChanged.connect(self.display_subpage)
@@ -94,7 +139,6 @@ class SimpleGetInbox(QThread):
         self.main_win = main_win
         self.email_db = email_db
 
-
     def run(self):
         try:
             self.main_win.listWidgetInbox.clear()
@@ -103,10 +147,13 @@ class SimpleGetInbox(QThread):
             emails_from_db = self.email_db.get_inbox()
             print(emails_from_db)
             for elem in emails_from_db:
-                self.main_win.listWidgetInbox.addItem(elem.title)
+                # self.main_win.listWidgetInbox.addItem(elem.title)
+                list_item = QListWidgetItem()
+                list_item.setData(Qt.UserRole, elem)
+                self.main_win.listWidgetInbox.addItem(list_item)
 
             # 网络可用则再从网络获取邮件
-            emails_from_net:List[Email] = self.main_win.client.get_email_list(0, 10)
+            emails_from_net: List[Email] = self.main_win.client.get_email_list(0, 10)
             for elem in emails_from_net:
                 if elem in emails_from_db:
                     continue
@@ -115,10 +162,72 @@ class SimpleGetInbox(QThread):
                 self.email_db.add_email(elem)
 
                 # 加到列表中
-                self.main_win.listWidgetInbox.addItem(elem.title)
+                # self.main_win.listWidgetInbox.addItem(elem.title)
+                # self.main_win.listWidgetInbox.setData(Qt.UserRole, elem)
 
         except Exception as e:
             print(e)
+
+
+class EmailDelegate(QStyledItemDelegate):
+    def paint(self, painter, option, index):
+        painter.save()
+
+        email: [Email] = index.data(Qt.UserRole)
+        # print("133: ", email)
+        if email:
+            rect = option.rect
+            sender = email.sender
+            subject = email.title
+
+            # Adjust rect to provide spacing between items
+            margin = 2
+            inner_rect = QRect(rect.left() + margin, rect.top() + margin, rect.width() - 2 * margin,
+                               rect.height() - 2 * margin)
+
+            # Set background color
+            if option.state & QStyle.State_Selected:
+                painter.fillRect(inner_rect, option.palette.highlight())
+            elif option.state & QStyle.State_MouseOver:
+                painter.fillRect(inner_rect, QColor("#AED6F1"))
+            else:
+                painter.fillRect(inner_rect, QColor("#D6EAF8"))
+
+            # Draw sender
+            painter.setFont(QFont("Arial", 10, QFont.Bold))
+            painter.setPen(Qt.black)
+            painter.drawText(inner_rect.adjusted(10, 5, -10, -inner_rect.height() // 2), Qt.AlignLeft, f"<{sender}>")
+
+            # Draw subject
+            painter.setFont(QFont("Arial", 10))
+            painter.setPen(Qt.black)
+            painter.drawText(inner_rect.adjusted(10, inner_rect.height() // 2, -10, -5), Qt.AlignLeft, subject)
+
+        painter.restore()
+
+    def sizeHint(self, option, index):
+        size = super().sizeHint(option, index)
+        size.setHeight(size.height() + 50)
+        return size
+
+
+class CoverageListWidget(QListWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMouseTracking(True)
+        self.current_hover_index = None
+
+    def mouseMoveEvent(self, event):
+        super().mouseMoveEvent(event)
+        index = self.indexAt(event.pos())
+        if index != self.current_hover_index:
+            self.current_hover_index = index
+            self.viewport().update()
+
+    def leaveEvent(self, event):
+        super().leaveEvent(event)
+        self.current_hover_index = None
+        self.viewport().update()
 
 
 class BussLogic(QtWidgets.QMainWindow):
@@ -129,7 +238,6 @@ class BussLogic(QtWidgets.QMainWindow):
 
         self.main_window = MainWindowUi()
         self.main_window.listWidget.itemClicked.connect(self.change_folder)
-        self.main_window.listWidgetInbox.addItem('111')
         # self.sub_window = SubWindow()
 
         # 默认账号密码
@@ -186,21 +294,21 @@ class BussLogic(QtWidgets.QMainWindow):
             QMessageBox.warning(self, "提示", f"{e}")
 
 
-class List_item(QtWidgets.QListWidgetItem):
-    def __init__(self, subject, sender, uid, index):
-        super().__init__()
-        self.uid = uid
-        self.index = index
-        self.widgit = QtWidgets.QWidget()
-        self.subject_label = QtWidgets.QLabel()
-        self.subject_label.setText(subject)
-        self.sender_label = QtWidgets.QLabel()
-        self.sender_label.setText(sender)
-        self.hbox = QtWidgets.QVBoxLayout()
-        self.hbox.addWidget(self.sender_label)
-        self.hbox.addWidget(self.subject_label)
-        self.widgit.setLayout(self.hbox)
-        self.setSizeHint(self.widgit.sizeHint())
+# class List_item(QtWidgets.QListWidgetItem):
+#     def __init__(self, subject, sender, uid, index):
+#         super().__init__()
+#         self.uid = uid
+#         self.index = index
+#         self.widgit = QtWidgets.QWidget()
+#         self.subject_label = QtWidgets.QLabel()
+#         self.subject_label.setText(subject)
+#         self.sender_label = QtWidgets.QLabel()
+#         self.sender_label.setText(sender)
+#         self.hbox = QtWidgets.QVBoxLayout()
+#         self.hbox.addWidget(self.sender_label)
+#         self.hbox.addWidget(self.subject_label)
+#         self.widgit.setLayout(self.hbox)
+#         self.setSizeHint(self.widgit.sizeHint())
 
 
 if __name__ == "__main__":
