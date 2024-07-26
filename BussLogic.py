@@ -119,6 +119,8 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         selectedItem = self.listWidgetInbox.currentItem()
         if selectedItem:
             self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
+            email = selectedItem.data(Qt.UserRole)
+            # self.email_db.delete_email(email.obj_id)
 
     def onItemClicked(self, item: QListWidgetItem):
         # print(item)
