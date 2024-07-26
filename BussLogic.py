@@ -144,14 +144,14 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
     def onItemClicked(self, item: QListWidgetItem):
         # print(item)
         email: Email = item.data(Qt.UserRole)
-        client = EmailClient(
-            data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
-            data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
-            data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
-            data_store.EmailConfig.POP_PORT,  # POP 端口
-            data_store.USER_NAME,  # 用户名
-            data_store.PASSWORD  # 密码
-        )
+        # client = EmailClient(
+        #     data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
+        #     data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
+        #     data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
+        #     data_store.EmailConfig.POP_PORT,  # POP 端口
+        #     data_store.USER_NAME,  # 用户名
+        #     data_store.PASSWORD  # 密码
+        # )
         # print(email)
         if email:
             # TODO 这里一调用就报错，无法解析 body：UnicodeDecodeError('utf-8',xxx)
@@ -166,9 +166,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
     def display_subpage(self, i):
         self.stacked_widget.setCurrentIndex(i)
-
-
-
 
 
 class SimpleGetEmail(QThread):
