@@ -209,7 +209,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pageCompose">
        <widget class="QLabel" name="labelNewMail">
@@ -410,7 +410,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QTextBrowser" name="textBrowser">
+       <widget class="QTextBrowser" name="inboxTextBrowser">
         <property name="geometry">
          <rect>
           <x>280</x>
@@ -507,12 +507,12 @@ p, li { white-space: pre-wrap; }
         </item>
        </widget>
        <zorder>listWidgetInbox</zorder>
-       <zorder>textBrowser</zorder>
+       <zorder>inboxTextBrowser</zorder>
        <zorder>Delete_Button</zorder>
        <zorder>listWidget_4</zorder>
        <zorder>Reflesh_Button</zorder>
       </widget>
-      <widget class="QWidget" name="pageContacts">
+      <widget class="QWidget" name="pageDrafts">
        <widget class="QListWidget" name="listWidgetDrafts">
         <property name="geometry">
          <rect>
@@ -528,7 +528,7 @@ p, li { white-space: pre-wrap; }
          </font>
         </property>
        </widget>
-       <widget class="QTextBrowser" name="textBrowser_2">
+       <widget class="QTextBrowser" name="draftsTextBrowser">
         <property name="geometry">
          <rect>
           <x>281</x>
@@ -681,10 +681,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>listWidget_4</tabstop>
   <tabstop>Reflesh_Button</tabstop>
   <tabstop>listWidgetInbox</tabstop>
-  <tabstop>textBrowser</tabstop>
+  <tabstop>inboxTextBrowser</tabstop>
   <tabstop>Delete_Button</tabstop>
   <tabstop>listWidgetDrafts</tabstop>
-  <tabstop>textBrowser_2</tabstop>
+  <tabstop>draftsTextBrowser</tabstop>
   <tabstop>Resend_button</tabstop>
   <tabstop>pushButtonBackToInbox</tabstop>
   <tabstop>pushButtonComposeAnotherEmail</tabstop>

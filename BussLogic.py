@@ -68,6 +68,8 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         # self.sub_window = SubWindow()
 
         self.inboxGetter = SimpleGetInbox(self, self.email_db)
+        self.draftsGetter = SimpleGetDrafts(self, self.email_db)
+
         self.listWidget.itemClicked.connect(self.change_folder)
 
         # self.main_window.listWidgetInbox.addItem('111')
@@ -78,7 +80,14 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.listWidgetInbox.customContextMenuRequested.connect(self.showListContextMenu)
         self.listWidgetInbox.itemClicked.connect(self.onItemClicked)
 
-        self.textBrowser.setHtml('<h1 style="color: green;">选一个邮件查看内容</h1>')
+        self.listWidgetDrafts.setItemDelegate(EmailDelegate())
+
+        self.listWidgetDrafts.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.listWidgetDrafts.customContextMenuRequested.connect(self.showListContextMenu)
+        self.listWidgetDrafts.itemClicked.connect(self.onItemClicked)
+
+        self.inboxTextBrowser.setHtml('<h1 style="color: green;">选一个邮件查看内容</h1>')
+        self.draftsTextBrowser.setHtml('<h1 style="color: green;">选一个邮件查看内容</h1>')
 
         self.change_stacked_widget()
 
@@ -112,33 +121,43 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         contextMenu.exec_(self.listWidgetInbox.mapToGlobal(pos))
 
     def refreshList(self):
-        # self.email_db.get_all_emails()
-        self.inboxGetter.start()
+        if self.listWidget.currentItem().text() == '收件箱':
+            self.inboxGetter.start()
+
+        if self.listWidget.currentItem().text() == '草稿箱':
+            self.draftsGetter.start()
 
     def deleteItem(self):
-        selectedItem = self.listWidgetInbox.currentItem()
-        if selectedItem:
-            self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
-            email = selectedItem.data(Qt.UserRole)
-            self.client.delete_email(email.obj_id)
-            self.email_db.delete_email(email.obj_id)
+        if self.listWidget.currentItem().text() == '收件箱':
+            selectedItem = self.listWidgetInbox.currentItem()
+            if selectedItem:
+                self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+                self.client.delete_email(email.obj_id)
+                self.email_db.delete_email(email.obj_id)
+
+        if self.listWidget.currentItem().text() == '草稿箱':
+            selectedItem = self.listWidgetDrafts.currentItem()
+            if selectedItem:
+                self.listWidgetDrafts.takeItem(self.listWidgetDrafts.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+
+                # 删除草稿箱？
+                # self.client.delete_email(email.obj_id)
 
     def onItemClicked(self, item: QListWidgetItem):
         # print(item)
         email: Email = item.data(Qt.UserRole)
         # print(email)
         if email:
-            self.textBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
+            self.inboxTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
+            self.draftsTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
 
     def change_stacked_widget(self):
         self.list_widget.currentRowChanged.connect(self.display_subpage)
 
     def display_subpage(self, i):
         self.stacked_widget.setCurrentIndex(i)
-
-    def set_text_edit(self, mail_server, username, password):
-        text = mail_server + username + password
-        self.textEdit.setText(text)
 
 
 class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
@@ -165,12 +184,14 @@ class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
         # print(base64.b64decode(arr[0].title).decode("utf-8"))
 
 
-class SimpleGetInbox(QThread):
+class SimpleGetEmail(QThread):
     def __init__(self, main_win: MainWindowUi, email_db: EmailDatabase):
-        super(SimpleGetInbox, self).__init__()
+        super(SimpleGetEmail, self).__init__()
         self.main_win = main_win
         self.email_db = email_db
 
+
+class SimpleGetInbox(SimpleGetEmail):
     def run(self):
         try:
             self.main_win.listWidgetInbox.clear()
@@ -196,6 +217,27 @@ class SimpleGetInbox(QThread):
                 # 加到列表中
                 # self.main_win.listWidgetInbox.addItem(elem.title)
                 # self.main_win.listWidgetInbox.setData(Qt.UserRole, elem)
+        except Exception as e:
+            # QMessageBox.warning(self.main_win, "出错", f'出错了：{e}')
+            print(e)
+
+
+class SimpleGetDrafts(SimpleGetEmail):
+    def run(self):
+        try:
+            self.main_win.listWidgetDrafts.clear()
+
+            # 从数据库获取草稿
+            drafts_from_db = self.email_db.get_draft_emails()
+            print(drafts_from_db)
+
+            # 展示到列表
+            for elem in drafts_from_db:
+                # self.main_win.listWidgetInbox.addItem(elem.title)
+                list_item = QListWidgetItem()
+                list_item.setData(Qt.UserRole, elem)
+                self.main_win.listWidgetInbox.addItem(list_item)
+
         except Exception as e:
             # QMessageBox.warning(self.main_win, "出错", f'出错了：{e}')
             print(e)
@@ -241,25 +283,6 @@ class EmailDelegate(QStyledItemDelegate):
         size = super().sizeHint(option, index)
         size.setHeight(size.height() + 50)
         return size
-
-
-class CoverageListWidget(QListWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setMouseTracking(True)
-        self.current_hover_index = None
-
-    def mouseMoveEvent(self, event):
-        super().mouseMoveEvent(event)
-        index = self.indexAt(event.pos())
-        if index != self.current_hover_index:
-            self.current_hover_index = index
-            self.viewport().update()
-
-    def leaveEvent(self, event):
-        super().leaveEvent(event)
-        self.current_hover_index = None
-        self.viewport().update()
 
 
 class BussLogic(QtWidgets.QMainWindow):
