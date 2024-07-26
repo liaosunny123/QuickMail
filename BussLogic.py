@@ -55,16 +55,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.listWidgetInbox = self.listWidgetInbox
 
         self.email_db = email_db
-
-        # 默认账号密码
-        self.client = EmailClient(
-            "smtp-mail.outlook.com",  # SMTP 服务器地址
-            587,  # SMTP 端口
-            "outlook.office365.com",  # POP 服务器地址
-            995,  # POP 端口
-            data_store.USER_NAME,  # 用户名
-            data_store.PASSWORD  # 密码
-        )
         # self.sub_window = SubWindow()
 
         self.inboxGetter = SimpleGetInbox(self, self.email_db)
@@ -100,10 +90,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
     def showListContextMenu(self, pos: QPoint):
         contextMenu = QMenu(self)
 
-        # newAct = QAction('New', self)
-        # newAct.triggered.connect(self.addItem)
-        # contextMenu.addAction(newAct)
-
         refresh_act = QAction('刷新', self)
         refresh_act.triggered.connect(self.refreshList)
         contextMenu.addAction(refresh_act)
@@ -133,7 +119,17 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             if selectedItem:
                 self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
                 email = selectedItem.data(Qt.UserRole)
-                self.client.delete_email(email.obj_id)
+                # 默认账号密码
+                client = EmailClient(
+                    data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
+                    data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
+                    data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
+                    data_store.EmailConfig.POP_PORT,  # POP 端口
+                    data_store.USER_NAME,  # 用户名
+                    data_store.PASSWORD  # 密码
+                )
+
+                client.delete_email(email.obj_id)
                 self.email_db.delete_email(email.obj_id)
 
         if self.listWidget.currentItem().text() == '草稿箱':
@@ -143,7 +139,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                 email = selectedItem.data(Qt.UserRole)
 
                 # 删除草稿箱？
-                # self.client.delete_email(email.obj_id)
+                # client.delete_email(email.obj_id)
 
     def onItemClicked(self, item: QListWidgetItem):
         # print(item)
@@ -160,28 +156,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.stacked_widget.setCurrentIndex(i)
 
 
-class SubWindow(SubWindow_Ui, QtWidgets.QMainWindow):
-    def __init__(self):
-        super(SubWindow, self).__init__()
-        client = EmailClient(
-            "smtp-mail.outlook.com",  # SMTP 服务器地址
-            587,  # SMTP 端口
-            "outlook.office365.com",  # POP 服务器地址
-            995,  # POP 端口
-            data_store.USER_NAME,  # 用户名
-            data_store.PASSWORD  # 密码
-        )
 
-        arr = client.get_email_list(0, 10)
-        print(arr)
-
-        for e in arr:
-            self.listWidget.addItem(e.title)
-
-        self.textEdit.setHtml(arr[0].title)
-
-        # print(arr[0].title)
-        # print(base64.b64decode(arr[0].title).decode("utf-8"))
 
 
 class SimpleGetEmail(QThread):
@@ -205,8 +180,17 @@ class SimpleGetInbox(SimpleGetEmail):
                 list_item.setData(Qt.UserRole, elem)
                 self.main_win.listWidgetInbox.addItem(list_item)
 
+            # 默认账号密码
+            client = EmailClient(
+                data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
+                data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
+                data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
+                data_store.EmailConfig.POP_PORT,  # POP 端口
+                data_store.USER_NAME,  # 用户名
+                data_store.PASSWORD  # 密码
+            )
             # 网络可用则再从网络获取邮件
-            emails_from_net: List[Email] = self.main_win.client.get_email_list(0, 10)
+            emails_from_net: List[Email] = client.get_email_list(0, 10)
             for elem in emails_from_net:
                 if elem in emails_from_db:
                     continue
@@ -311,6 +295,9 @@ class BussLogic(QtWidgets.QMainWindow):
         try:
             self.email_db.login(mail_server_address, username, password)
 
+            # 根据输入的用户名密码修改pop和smtp的用户名密码
+            data_store.USER_NAME = username
+            data_store.PASSWORD = password
             # 根据输入内容修改客户端
             # self.client = EmailClient(
             #     "smtp-mail.outlook.com",  # SMTP 服务器地址
