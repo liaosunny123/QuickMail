@@ -136,15 +136,16 @@ class EmailClient:
         header_dict = self._parse_header_in_dict(headers)
 
         email = Email(
-            sender=self._decode_mime_words(header_dict.get('From', '').split(" ")[0].strip('"')) + ' ' +
-                   header_dict.get('From', '').split(" ")[1] if len(
-                header_dict.get('From', '').split(" ")) == 2 else header_dict.get('From', ''),
-            receiver=self._decode_mime_words(header_dict.get('To', '').split(" ")[0].strip('"')) + ' ' +
-                     header_dict.get('To', '').split(" ")[1] if len(
-                header_dict.get('To', '').split(" ")) == 2 else header_dict.get('To', ''),
+            sender=self._decode_mime_words(header_dict.get('From', '').rsplit(" ", 1)[0].strip('"')) + ' ' +
+                   header_dict.get('From', '').rsplit(" ", 1)[1] if len(
+                header_dict.get('From', '').rsplit(" ", 1)) == 2 else header_dict.get('From', ''),
+            receiver=self._decode_mime_words(header_dict.get('To', '').rsplit(" ", 1)[0].strip('"')) + ' ' +
+                     header_dict.get('To', '').rsplit(" ", 1)[1] if len(
+                header_dict.get('To', '').rsplit(" ", 1)) == 2 else header_dict.get('To', ''),
             title=self._decode_mime_words(header_dict.get('Subject', '')),
             body='',
-            timestamp=datetime.strptime(header_dict.get('Date', '').split("+")[0].strip().split("-")[0].strip(), "%a, %d %b %Y %H:%M:%S"),
+            timestamp=datetime.strptime(header_dict.get('Date', '').split("+")[0].strip().split("-")[0].strip(),
+                                        "%a, %d %b %Y %H:%M:%S"),
             offset_id=-1,
             header_dict=header_dict
         )
@@ -196,6 +197,7 @@ class EmailClient:
                    is_html_body=False) -> bool:
         """
         向指定地址发送邮件
+        :param is_html_body:
         :param to_address: 收件人地址
         :param subject: 邮件主题
         :param body: 邮件内容，提供一个纯文本内容
