@@ -209,7 +209,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageCompose">
        <widget class="QLabel" name="labelNewMail">
@@ -314,22 +314,6 @@
         </property>
         <property name="text">
          <string/>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="textEdit">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>160</y>
-          <width>801</width>
-          <height>451</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Microsoft YaHei UI</family>
-          <pointsize>10</pointsize>
-         </font>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButtonSend">
@@ -627,9 +611,9 @@ p, li { white-space: pre-wrap; }
        <widget class="QLabel" name="label_2">
         <property name="geometry">
          <rect>
-          <x>300</x>
-          <y>190</y>
-          <width>161</width>
+          <x>320</x>
+          <y>200</y>
+          <width>121</width>
           <height>41</height>
          </rect>
         </property>
@@ -683,25 +667,6 @@ p, li { white-space: pre-wrap; }
          <string>编写另一封邮件</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_3">
-        <property name="geometry">
-         <rect>
-          <x>250</x>
-          <y>240</y>
-          <width>441</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Microsoft YaHei UI Light</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>邮件已发送并保存至&quot;sent&quot;文件夹中</string>
-        </property>
-       </widget>
       </widget>
      </widget>
     </item>
@@ -711,7 +676,6 @@ p, li { white-space: pre-wrap; }
  <tabstops>
   <tabstop>lineEditTo</tabstop>
   <tabstop>lineEditSubject</tabstop>
-  <tabstop>textEdit</tabstop>
   <tabstop>pushButtonSend</tabstop>
   <tabstop>pushButtonSave</tabstop>
   <tabstop>listWidget_4</tabstop>

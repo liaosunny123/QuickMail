@@ -146,6 +146,7 @@ class SimpleGetInbox(QThread):
         self.main_win = main_win
         self.email_db = email_db
 
+
     def run(self):
         try:
             self.main_win.listWidgetInbox.clear()
