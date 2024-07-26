@@ -12,13 +12,19 @@ if __name__ == "__main__":
         data_store.PASSWORD,  # 密码
     )
 
-    # # 发送邮件
-    # client.send_email(
-    #     "epicmo@whu.edu.cn",
-    #     "Test Subject",
-    #     "<b>This is a test email body.</b>",
-    #     cc_addresses=["1728913755@qq.com"]
-    # )
+    # 发送邮件
+    client.send_email(
+        "epicmo@whu.edu.cn",
+        "Test Subject",
+        '''
+        «IDOCTYPE HTML PUBLIC "-//WBC//DD HTML 4. 0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+‹html><head>‹meta name="qrichtext" content="1" /›‹style type="text/css">
+p, li{ white-space: pre-wrap;}
+</style>‹/head><body style=" font-family: 'Arial'; font-size:10.5pt; font-weight:400; font-style:normal;">
+‹p style=" margin-top:Opx; margin-bottom:Opx; margin-left:0px; margin-right:Opx; -qt-block-indent:0; text-indent:0px;">11</p></body></html>
+    ''',
+        cc_addresses=["1728913755@qq.com"]
+    )
 
     # 获取邮件列表
     email_list = client.get_email_list(offset=0, limit=16)
