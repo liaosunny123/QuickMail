@@ -105,8 +105,10 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             QMessageBox.warning(self, 'Error', '请填写完整的邮件信息')
             return
 
-
+        print(recipient)
+        print(subject)
         print(body)
+        print(cc)
         try:
             if cc:
                 success = self.client.send_email(recipient, subject, body, cc)
@@ -114,31 +116,68 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                 success = self.client.send_email(recipient, subject, body)
             if success:
                 QMessageBox.information(self, 'Success', '邮件发送成功')
-                self.lineEditTo.clear()
-                self.lineEditTo_2.clear()
-                self.lineEditSubject.clear()
-                self.rich_text_widget.text_edit.clear()
-                #插入数据库
+
+                # 创建 Email 对象
+                email = Email(
+                    sender=data_store.USER_NAME,  # 记得改回登录账号
+                    receiver=recipient,
+                    # cc=cc,#抄送
+                    title=subject,
+                    body=body,
+                    timestamp=datetime.utcnow(),
+                    is_read=False,
+                    is_deleted=False,
+                    folder="send",
+                )
+
+                try:
+                    self.email_db.add_email(email)
+                except Exception as e:
+                    QMessageBox.warning(self, 'Error', f'保存到数据库失败: {str(e)}')
+                    return
+
+                self.clear_input_fields()
+
             else:
                 QMessageBox.warning(self, 'Error', '邮件发送失败')
         except Exception as e:
             QMessageBox.warning(self, 'Error', f'邮件发送失败: {str(e)}')
 
     def click_save(self):
-        recipient = self.lineEditTo.text().strip()
-        cc = self.lineEditTo_2.text().split(';') if self.lineEditTo_2.text() else []
-        cc = [email.strip() for email in cc if email.strip()]
+        recipient = self.lineEditTo.text()
+        cc = self.lineEditTo_2.text()
         subject = self.lineEditSubject.text()
         body = self.rich_text_widget.toHtml()
-        #插入数据库
+
+        # 创建 Email 对象
+        email = Email(
+            sender=data_store.USER_NAME,#记得改回登录账号
+            receiver=recipient,
+            #cc=cc,#抄送
+            title=subject,
+            body=body,
+            timestamp=datetime.utcnow(),
+            is_read=False,
+            is_deleted=False,
+            folder="drafts"
+        )
+
+        try:
+            self.email_db.add_email(email)
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'保存到数据库失败: {str(e)}')
+            return
+
+        self.clear_input_fields()
+
+        self.stacked_widget.setCurrentIndex(3)
+        #选中当前的邮件草稿
+
+    def clear_input_fields(self):
         self.lineEditTo.clear()
         self.lineEditTo_2.clear()
         self.lineEditSubject.clear()
         self.rich_text_widget.text_edit.clear()
-        #跳转到草稿箱
-
-
-
 
 
     def change_folder(self, item):
