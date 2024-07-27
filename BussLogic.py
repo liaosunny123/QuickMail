@@ -92,7 +92,11 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             data_store.PASSWORD  # 密码
         )
 
+    def change_stacked_widget(self):
+        self.list_widget.currentRowChanged.connect(self.display_subpage)
 
+    def display_subpage(self, i):
+        self.stacked_widget.setCurrentIndex(i)
 
     def click_send(self):
         recipient = self.lineEditTo.text().strip()
@@ -213,6 +217,8 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             self.draftsGetter.start()
 
     def deleteItem(self):
+
+
         if self.listWidget.currentItem().text() == '收件箱':
             selectedItem = self.listWidgetInbox.currentItem()
             if selectedItem:
@@ -260,11 +266,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             self.inboxTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
             self.draftsTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
 
-    def change_stacked_widget(self):
-        self.list_widget.currentRowChanged.connect(self.display_subpage)
 
-    def display_subpage(self, i):
-        self.stacked_widget.setCurrentIndex(i)
 
 
 class SimpleGetEmail(QThread):
