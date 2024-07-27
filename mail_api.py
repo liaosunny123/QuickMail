@@ -227,6 +227,7 @@ class EmailClient:
             self._smtp_command(base64.b64encode(self.password.encode()).decode())
 
             self._smtp_command(f"MAIL FROM:<{self.username}>")
+            self._smtp_command(f"RCPT TO:<{to_address}>")
 
             if cc_addresses:
                 for cc in cc_addresses:
@@ -242,6 +243,8 @@ class EmailClient:
                 headers += "Content-Type: text/plain; charset=utf-8\r\n"
             if cc_addresses:
                 headers += f"Cc: {', '.join(cc_addresses)}\r\n"
+
+            body = body.replace('\r\n', '\n').replace('\n', '\r\n')
             message = f"{headers}\r\n{body}\r\n."
             self._smtp_command(message)
             self._smtp_command("QUIT")
