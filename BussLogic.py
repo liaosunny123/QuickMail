@@ -57,6 +57,9 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.email_db = email_db
         # self.sub_window = SubWindow()
 
+        self.pushButtonSend.clicked.connect(self.click_send)
+        self.pushButtonSave.clicked.connect(self.click_save)
+
         self.inboxGetter = SimpleGetInbox(self, self.email_db)
         self.draftsGetter = SimpleGetDrafts(self, self.email_db)
 
@@ -80,6 +83,63 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.draftsTextBrowser.setHtml('<h1 style="color: green;">选一个邮件查看内容</h1>')
 
         self.change_stacked_widget()
+        self.client = EmailClient(
+            "smtp-mail.outlook.com",  # SMTP 服务器地址
+            587,  # SMTP 端口
+            "outlook.office365.com",  # POP 服务器地址
+            995,  # POP 端口,  # SMTP 服务器地址
+            data_store.USER_NAME,  # 用户名
+            data_store.PASSWORD  # 密码
+        )
+
+
+
+    def click_send(self):
+        recipient = self.lineEditTo.text().strip()
+        cc = self.lineEditTo_2.text().split(';') if self.lineEditTo_2.text() else []
+        cc = [email.strip() for email in cc if email.strip()]
+        subject = self.lineEditSubject.text()
+        body = self.rich_text_widget.toHtml()
+
+        if not recipient or not subject or not body:
+            QMessageBox.warning(self, 'Error', '请填写完整的邮件信息')
+            return
+
+
+        print(body)
+        try:
+            if cc:
+                success = self.client.send_email(recipient, subject, body, cc)
+            else:
+                success = self.client.send_email(recipient, subject, body)
+            if success:
+                QMessageBox.information(self, 'Success', '邮件发送成功')
+                self.lineEditTo.clear()
+                self.lineEditTo_2.clear()
+                self.lineEditSubject.clear()
+                self.rich_text_widget.text_edit.clear()
+                #插入数据库
+            else:
+                QMessageBox.warning(self, 'Error', '邮件发送失败')
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'邮件发送失败: {str(e)}')
+
+    def click_save(self):
+        recipient = self.lineEditTo.text().strip()
+        cc = self.lineEditTo_2.text().split(';') if self.lineEditTo_2.text() else []
+        cc = [email.strip() for email in cc if email.strip()]
+        subject = self.lineEditSubject.text()
+        body = self.rich_text_widget.toHtml()
+        #插入数据库
+        self.lineEditTo.clear()
+        self.lineEditTo_2.clear()
+        self.lineEditSubject.clear()
+        self.rich_text_widget.text_edit.clear()
+        #跳转到草稿箱
+
+
+
+
 
     def change_folder(self, item):
         print(item.text())
