@@ -194,7 +194,7 @@ class EmailClient:
         return email
 
     def send_email(self, to_address: str, subject: str, body: str, cc_addresses: list[str] = None,
-                   is_html_body=False) -> bool:
+                   is_html_body=True) -> bool:
         """
         向指定地址发送邮件
         :param is_html_body:
