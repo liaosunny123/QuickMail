@@ -40,6 +40,7 @@ class Ui_MainWindow(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("icon/quickmail.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
+
         self.verticalLayoutWidget = QtWidgets.QWidget(MainWindow)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 20, 181, 150))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
@@ -48,6 +49,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.listWidget = QtWidgets.QListWidget(self.verticalLayoutWidget)
         self.listWidget.setObjectName("listWidget")
+
         item = QtWidgets.QListWidgetItem()
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
@@ -65,6 +67,7 @@ class Ui_MainWindow(object):
         brush.setStyle(QtCore.Qt.NoBrush)
         item.setForeground(brush)
         self.listWidget.addItem(item)
+
         item = QtWidgets.QListWidgetItem()
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
@@ -76,6 +79,7 @@ class Ui_MainWindow(object):
         icon2.addPixmap(QtGui.QPixmap("icon/sended.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         item.setIcon(icon2)
         self.listWidget.addItem(item)
+
         item = QtWidgets.QListWidgetItem()
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
@@ -88,6 +92,7 @@ class Ui_MainWindow(object):
         icon3.addPixmap(QtGui.QPixmap("icon/inbox.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         item.setIcon(icon3)
         self.listWidget.addItem(item)
+
         item = QtWidgets.QListWidgetItem()
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
@@ -99,7 +104,12 @@ class Ui_MainWindow(object):
         icon4.addPixmap(QtGui.QPixmap("icon/draft.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         item.setIcon(icon4)
         self.listWidget.addItem(item)
+
+        self.listWidget.setStyleSheet("QListWidget { border: none; }")
+
         self.verticalLayout.addWidget(self.listWidget)
+
+
         self.horizontalLayoutWidget = QtWidgets.QWidget(MainWindow)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(220, 20, 821, 671))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
@@ -108,6 +118,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.stackedWidget = QtWidgets.QStackedWidget(self.horizontalLayoutWidget)
         self.stackedWidget.setObjectName("stackedWidget")
+
         self.pageCompose = QtWidgets.QWidget()
         self.pageCompose.setObjectName("pageCompose")
         self.labelNewMail = QtWidgets.QLabel(self.pageCompose)
@@ -193,6 +204,7 @@ class Ui_MainWindow(object):
         self.lineEditTo_2.setObjectName("lineEditTo_2")
         self.stackedWidget.addWidget(self.pageCompose)
 
+
         self.pageSended = QtWidgets.QWidget()
         self.pageSended.setObjectName("pageSended")
         self.stackedWidget.addWidget(self.pageSended)
@@ -209,14 +221,6 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.SendedTextBrowser.setFont(font)
         self.SendedTextBrowser.setObjectName("SendedTextBrowser")
-        self.SendedDeleteButton = QtWidgets.QPushButton(self.pageSended)
-        self.SendedDeleteButton.setGeometry(QtCore.QRect(770, 620, 40, 40))
-        self.SendedDeleteButton.setText("")
-        icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap("icon/TRASH BIN.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.SendedDeleteButton.setIcon(icon6)
-        self.SendedDeleteButton.setIconSize(QtCore.QSize(40, 40))
-        self.SendedDeleteButton.setObjectName("SendedDeleteButton")
         self.listWidget_5 = QtWidgets.QListWidget(self.pageSended)
         self.listWidget_5.setGeometry(QtCore.QRect(0, 0, 281, 40))
         self.listWidget_5.setObjectName("listWidget_5")
@@ -330,6 +334,13 @@ class Ui_MainWindow(object):
         self.pushButtonComposeAnotherEmail.setObjectName("pushButtonComposeAnotherEmail")
         self.stackedWidget.addWidget(self.pageEmailSent)
         self.horizontalLayout.addWidget(self.stackedWidget)
+
+
+        self.DividingLine = QtWidgets.QFrame(MainWindow)
+        self.DividingLine.setObjectName("DividingLine")
+        self.DividingLine.setGeometry(QtCore.QRect(200, 20, 20, 671))
+        self.DividingLine.setFrameShape(QtWidgets.QFrame.VLine)
+        self.DividingLine.setFrameShadow(QtWidgets.QFrame.Sunken)
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(3)

@@ -97,6 +97,11 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
     def display_subpage(self, i):
         self.stacked_widget.setCurrentIndex(i)
+        if (i==0):
+            self.DividingLine.show()
+        else:
+            self.DividingLine.hide()
+
 
     def click_send(self):
         recipient = self.lineEditTo.text().strip()
