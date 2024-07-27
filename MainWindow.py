@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from richText import RichTextWidget
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -154,6 +154,11 @@ class Ui_MainWindow(object):
         self.lineEditSubject.setFont(font)
         self.lineEditSubject.setText("")
         self.lineEditSubject.setObjectName("lineEditSubject")
+
+        self.rich_text_widget = RichTextWidget(self.pageCompose)
+        self.rich_text_widget.setGeometry(QtCore.QRect(10, 160, 801, 451))
+        self.rich_text_widget.setObjectName("rich_text_widget")
+
         self.pushButtonSend = QtWidgets.QPushButton(self.pageCompose)
         self.pushButtonSend.setGeometry(QtCore.QRect(290, 620, 71, 41))
         font = QtGui.QFont()
@@ -187,9 +192,46 @@ class Ui_MainWindow(object):
         self.lineEditTo_2.setText("")
         self.lineEditTo_2.setObjectName("lineEditTo_2")
         self.stackedWidget.addWidget(self.pageCompose)
+
         self.pageSended = QtWidgets.QWidget()
         self.pageSended.setObjectName("pageSended")
         self.stackedWidget.addWidget(self.pageSended)
+        self.listWidgetSended = QtWidgets.QListWidget(self.pageSended)
+        self.listWidgetSended.setGeometry(QtCore.QRect(0, 40, 281, 631))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.listWidgetSended.setFont(font)
+        self.listWidgetSended.setObjectName("listWidgetSended")
+        self.SendedTextBrowser = QtWidgets.QTextBrowser(self.pageSended)
+        self.SendedTextBrowser.setGeometry(QtCore.QRect(281, 0, 541, 671))
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(10)
+        self.SendedTextBrowser.setFont(font)
+        self.SendedTextBrowser.setObjectName("SendedTextBrowser")
+        self.SendedDeleteButton = QtWidgets.QPushButton(self.pageSended)
+        self.SendedDeleteButton.setGeometry(QtCore.QRect(770, 620, 40, 40))
+        self.SendedDeleteButton.setText("")
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap("image/TRASH BIN.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.SendedDeleteButton.setIcon(icon6)
+        self.SendedDeleteButton.setIconSize(QtCore.QSize(40, 40))
+        self.SendedDeleteButton.setObjectName("SendedDeleteButton")
+        self.listWidget_5 = QtWidgets.QListWidget(self.pageSended)
+        self.listWidget_5.setGeometry(QtCore.QRect(0, 0, 281, 40))
+        self.listWidget_5.setObjectName("listWidget_5")
+        item = QtWidgets.QListWidgetItem()
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        item.setFont(font)
+        item.setIcon(icon4)
+        self.listWidget_5.addItem(item)
+        self.stackedWidget.addWidget(self.pageSended)
+
+
         self.pageInbox = QtWidgets.QWidget()
         self.pageInbox.setObjectName("pageInbox")
         self.listWidgetInbox = QtWidgets.QListWidget(self.pageInbox)
@@ -215,6 +257,8 @@ class Ui_MainWindow(object):
         item.setIcon(icon3)
         self.listWidget_4.addItem(item)
         self.stackedWidget.addWidget(self.pageInbox)
+
+
         self.pageDrafts = QtWidgets.QWidget()
         self.pageDrafts.setObjectName("pageDrafts")
         self.listWidgetDrafts = QtWidgets.QListWidget(self.pageDrafts)
@@ -230,8 +274,10 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.draftsTextBrowser.setFont(font)
         self.draftsTextBrowser.setObjectName("draftsTextBrowser")
+
         self.Resend_button = QtWidgets.QPushButton(self.pageDrafts)
         self.Resend_button.setGeometry(QtCore.QRect(740, 620, 71, 41))
+
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(11)
@@ -250,6 +296,8 @@ class Ui_MainWindow(object):
         item.setIcon(icon4)
         self.listWidget_5.addItem(item)
         self.stackedWidget.addWidget(self.pageDrafts)
+
+
         self.pageEmailSent = QtWidgets.QWidget()
         self.pageEmailSent.setObjectName("pageEmailSent")
         self.label = QtWidgets.QLabel(self.pageEmailSent)
