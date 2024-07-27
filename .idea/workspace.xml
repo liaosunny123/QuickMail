@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="fix: 富文本">
+    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="fixBugs: 各配置项数据类型修正">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BussLogic.py" beforeDir="false" afterPath="$PROJECT_DIR$/BussLogic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_store.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_store.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mail_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/mail_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mail_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/mail_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +33,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
@@ -60,13 +64,12 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.BussLogic.executor": "Run",
-    "Python.mail test.executor": "Run",
     "Python.mail_api.executor": "Debug",
     "Python.mail_test.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "fordece",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "/Users/epicmo/Project/QuickMail",
+    "last_opened_file_path": "C:/Users/forDece/PycharmProjects/QuickMail-Test",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -84,7 +87,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.mail test">
+  <component name="RunManager">
     <configuration name="BussLogic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="QuickMail-Test" />
       <option name="ENV_FILES" value="" />
@@ -94,8 +97,9 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="C:\MyProgramFiles\anaconda" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -108,34 +112,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="mail test" type="PythonConfigurationType" factoryName="Python">
-      <module name="QuickMail" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.9" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="./mail_test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <list>
-      <item itemvalue="Python.mail test" />
-      <item itemvalue="Python.BussLogic" />
-    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.BussLogic" />
@@ -165,8 +141,6 @@
       <workItem from="1721738582354" duration="1786000" />
       <workItem from="1721896905349" duration="799000" />
       <workItem from="1721965372327" duration="5689000" />
-      <workItem from="1722006711429" duration="3848000" />
-      <workItem from="1722065123925" duration="560000" />
     </task>
     <task id="LOCAL-00001" summary="update: 添加一个测试用的子窗口">
       <option name="closed" value="true" />
@@ -264,31 +238,47 @@
       <option name="project" value="LOCAL" />
       <updated>1721973789759</updated>
     </task>
-    <task id="LOCAL-00013" summary="feat: 支持编码转换">
+    <task id="LOCAL-00013" summary="update: 同时从数据库和云端删除">
       <option name="closed" value="true" />
-      <created>1721989841308</created>
+      <created>1721973915969</created>
       <option name="number" value="00013" />
       <option name="presentableId" value="LOCAL-00013" />
       <option name="project" value="LOCAL" />
-      <updated>1721989841308</updated>
+      <updated>1721973915969</updated>
     </task>
-    <task id="LOCAL-00014" summary="fix: 修复 split逻辑">
+    <task id="LOCAL-00014" summary="update: 收件箱草稿箱二级菜单+富文本展示">
       <option name="closed" value="true" />
-      <created>1722008460042</created>
+      <created>1721974966812</created>
       <option name="number" value="00014" />
       <option name="presentableId" value="LOCAL-00014" />
       <option name="project" value="LOCAL" />
-      <updated>1722008460043</updated>
+      <updated>1721974966812</updated>
     </task>
-    <task id="LOCAL-00015" summary="fix: 富文本">
+    <task id="LOCAL-00015" summary="update: 每次调用smtp和pop时新建客户端">
       <option name="closed" value="true" />
-      <created>1722012503773</created>
+      <created>1722004474856</created>
       <option name="number" value="00015" />
       <option name="presentableId" value="LOCAL-00015" />
       <option name="project" value="LOCAL" />
-      <updated>1722012503773</updated>
+      <updated>1722004474856</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="update: 删掉多余的刷新和删除按钮">
+      <option name="closed" value="true" />
+      <created>1722005280595</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1722005280595</updated>
+    </task>
+    <task id="LOCAL-00017" summary="fixBugs: 各配置项数据类型修正">
+      <option name="closed" value="true" />
+      <created>1722006459186</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1722006459186</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -318,14 +308,33 @@
     <MESSAGE value="update: 处理合并问题" />
     <MESSAGE value="update: 修改代码结构，实现刷新" />
     <MESSAGE value="update: 删除邮件" />
-    <MESSAGE value="feat: 支持编码转换" />
-    <MESSAGE value="fix: 修复 split逻辑" />
-    <MESSAGE value="fix: 富文本" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 富文本" />
+    <MESSAGE value="update: 同时从数据库和云端删除" />
+    <MESSAGE value="update: 收件箱草稿箱二级菜单+富文本展示" />
+    <MESSAGE value="update: 每次调用smtp和pop时新建客户端" />
+    <MESSAGE value="update: 删掉多余的刷新和删除按钮" />
+    <MESSAGE value="fixBugs: 配置文件类型" />
+    <MESSAGE value="fixBugs: 各配置项数据类型修正" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixBugs: 各配置项数据类型修正" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BussLogic.py</url>
+          <line>60</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BussLogic.py</url>
+          <line>217</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/QuickMail_Test$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1721973863930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuickMail$mail_api.coverage" NAME="mail_api 覆盖结果" MODIFIED="1721989405837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuickMail$mail_test.coverage" NAME="mail test 覆盖结果" MODIFIED="1722065620630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/QuickMail$mail_test.coverage" NAME="mail_test 覆盖结果" MODIFIED="1721735115164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMail_Test$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1722007310524" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMail$mail_api.coverage" NAME="mail_api 覆盖结果" MODIFIED="1721735109423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

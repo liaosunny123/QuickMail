@@ -204,8 +204,20 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
     def onItemClicked(self, item: QListWidgetItem):
         # print(item)
         email: Email = item.data(Qt.UserRole)
+        # client = EmailClient(
+        #     data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
+        #     data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
+        #     data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
+        #     data_store.EmailConfig.POP_PORT,  # POP 端口
+        #     data_store.USER_NAME,  # 用户名
+        #     data_store.PASSWORD  # 密码
+        # )
         # print(email)
         if email:
+            # TODO 这里一调用就报错，无法解析 body：UnicodeDecodeError('utf-8',xxx)
+            # fullEmail = client.get_email_by_obj_id(email.obj_id)
+            # self.inboxTextBrowser.setHtml(fullEmail)
+            # self.draftsTextBrowser.setHtml(fullEmail)
             self.inboxTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
             self.draftsTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
 
@@ -214,9 +226,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
     def display_subpage(self, i):
         self.stacked_widget.setCurrentIndex(i)
-
-
-
 
 
 class SimpleGetEmail(QThread):
@@ -356,8 +365,8 @@ class BussLogic(QtWidgets.QMainWindow):
             self.email_db.login(mail_server_address, username, password)
 
             # 根据输入的用户名密码修改pop和smtp的用户名密码
-            data_store.USER_NAME = username
-            data_store.PASSWORD = password
+            # data_store.USER_NAME = username
+            # data_store.PASSWORD = password
             # 根据输入内容修改客户端
             # self.client = EmailClient(
             #     "smtp-mail.outlook.com",  # SMTP 服务器地址
