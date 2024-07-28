@@ -138,7 +138,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                 email = Email(
                     sender=data_store.USER_NAME,  # 记得改回登录账号
                     receiver=recipient,
-                    copy_for=','.join(cc),
+                    copy_for=';'.join(cc),
                     title=subject,
                     body=body,
                     timestamp=datetime.utcnow(),
@@ -170,7 +170,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         email = Email(
             sender=data_store.USER_NAME,  # 记得改回登录账号
             receiver=recipient,
-            copy_for=','.join(cc),
+            copy_for=';'.join(cc),
             title=subject,
             body=body,
             timestamp=datetime.utcnow(),
