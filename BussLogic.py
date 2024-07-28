@@ -265,7 +265,10 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                 self.inboxTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
 
             if self.listWidget.currentItem().text() == '草稿箱':
-                self.draftsTextBrowser.setHtml(email.copy_for)
+                self.draftLineEditTo.setText(email.sender)
+                self.draftLineEditCopyTo.setText(email.copy_for)
+                self.draftLabelEditSubject.setText(email.title)
+                self.draftsTextBrowser.setHtml(email.body)
                 # self.draftsTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
 
 

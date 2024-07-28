@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="fixBugs: 各配置项数据类型修正">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="update: 草稿箱使用富文本ui">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BussLogic.py" beforeDir="false" afterPath="$PROJECT_DIR$/BussLogic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_store.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_store.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mail_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/mail_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/richText.py" beforeDir="false" afterPath="$PROJECT_DIR$/richText.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +93,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.BussLogic">
+  <component name="RunManager" selected="Python.mail_test">
     <configuration name="BussLogic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="QuickMailTmp" />
       <option name="ENV_FILES" value="" />
@@ -145,8 +142,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.BussLogic" />
         <item itemvalue="Python.mail_test" />
+        <item itemvalue="Python.BussLogic" />
       </list>
     </recent_temporary>
   </component>
@@ -175,7 +172,7 @@
       <workItem from="1721965372327" duration="5689000" />
       <workItem from="1722149873784" duration="24000" />
       <workItem from="1722149904529" duration="91000" />
-      <workItem from="1722150002475" duration="3913000" />
+      <workItem from="1722150002475" duration="4539000" />
     </task>
     <task id="LOCAL-00001" summary="update: 添加一个测试用的子窗口">
       <option name="closed" value="true" />
@@ -313,7 +310,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722006459186</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="update: 草稿箱使用富文本ui">
+      <option name="closed" value="true" />
+      <created>1722154106367</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1722154106367</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -360,7 +365,8 @@
     <MESSAGE value="update: 删掉多余的刷新和删除按钮" />
     <MESSAGE value="fixBugs: 配置文件类型" />
     <MESSAGE value="fixBugs: 各配置项数据类型修正" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixBugs: 各配置项数据类型修正" />
+    <MESSAGE value="update: 草稿箱使用富文本ui" />
+    <option name="LAST_COMMIT_MESSAGE" value="update: 草稿箱使用富文本ui" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -381,8 +387,8 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/QuickMailTmp$emailDB.coverage" NAME="emailDB 覆盖结果" MODIFIED="1722151646980" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QuickMailTmp$MainWindow.coverage" NAME="MainWindow 覆盖结果" MODIFIED="1722153216747" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuickMailTmp$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1722153932008" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuickMailTmp$mail_test.coverage" NAME="mail_test 覆盖结果" MODIFIED="1722151907862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMailTmp$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1722154309805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMailTmp$mail_test.coverage" NAME="mail_test 覆盖结果" MODIFIED="1722154541110" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QuickMail$mail_test.coverage" NAME="mail_test 覆盖结果" MODIFIED="1721735115164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QuickMail_Test$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1722007310524" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QuickMailTmp$data_store.coverage" NAME="data_store 覆盖结果" MODIFIED="1722150141814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
