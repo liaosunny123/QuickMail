@@ -466,7 +466,7 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "收信箱"))
         self.listWidget_4.setSortingEnabled(__sortingEnabled)
 
-        self.Resend_button.setText(_translate("MainWindow", "Send"))
+        self.Resend_button.setText(_translate("MainWindow", "发送"))
 
         __sortingEnabled = self.listWidget_5.isSortingEnabled()
         self.listWidget_5.setSortingEnabled(False)
