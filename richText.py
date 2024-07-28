@@ -210,3 +210,6 @@ class RichTextWidget(QWidget):
 
     def toPlainText(self):
         return self.text_edit.toPlainText()
+
+    def setHtml(self, html: str):
+        return self.text_edit.setHtml(html)
