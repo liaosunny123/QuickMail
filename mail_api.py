@@ -6,9 +6,10 @@ from datetime import datetime
 from typing import Optional
 
 
+# 这个类应该是在mail_api.py中的
 class Email:
-    def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, offset_id: int,
-                 is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', obj_id=""):
+    def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, offset_id: int=0,
+                 is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', obj_id="",copy_for:str=""):
         self.sender = sender
         self.receiver = receiver
         self.title = title
@@ -19,6 +20,7 @@ class Email:
         self.folder = folder
         self.offset_id = offset_id
         self.obj_id = obj_id
+        self.copy_for=copy_for
 
     def __repr__(self):
         return f"<Email(title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
