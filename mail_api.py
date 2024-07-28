@@ -10,7 +10,7 @@ from typing import Optional, Any
 
 class Email:
     def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, offset_id: int = 0,
-                 is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', obj_id="",
+                 is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', obj_id="",copy_for:str="",
                  header_dict: Any = None):
         self.sender = sender
         self.receiver = receiver
@@ -22,10 +22,12 @@ class Email:
         self.folder = folder
         self.offset_id = offset_id
         self.obj_id = obj_id
+        self.copy_for = copy_for
         self.header_dict = header_dict
 
     def __repr__(self):
         return f"<Email(title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
+
 
     def __eq__(self, other):
         if isinstance(other, Email):

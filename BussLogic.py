@@ -114,10 +114,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             QMessageBox.warning(self, 'Error', '请填写完整的邮件信息')
             return
 
-        print(recipient)
-        print(subject)
-        print(body)
-        print(cc)
         try:
             if cc:
                 success = self.client.send_email(recipient, subject, body, cc)
@@ -130,13 +126,11 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                 email = Email(
                     sender=data_store.USER_NAME,  # 记得改回登录账号
                     receiver=recipient,
-                    # cc=cc,#抄送
+                    copy_for=','.join(cc),
                     title=subject,
                     body=body,
                     timestamp=datetime.utcnow(),
-                    is_read=False,
-                    is_deleted=False,
-                    folder="send",
+                    folder="sent",
                 )
 
                 try:
@@ -147,6 +141,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
                 self.clear_input_fields()
 
+                self.listWidget.setCurrentRow(1)
             else:
                 QMessageBox.warning(self, 'Error', '邮件发送失败')
         except Exception as e:
@@ -158,16 +153,13 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         subject = self.lineEditSubject.text()
         body = self.rich_text_widget.toHtml()
 
-        # 创建 Email 对象
         email = Email(
             sender=data_store.USER_NAME,#记得改回登录账号
             receiver=recipient,
-            #cc=cc,#抄送
+            copy_for=','.join(cc),
             title=subject,
             body=body,
             timestamp=datetime.utcnow(),
-            is_read=False,
-            is_deleted=False,
             folder="drafts"
         )
 
@@ -178,8 +170,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             return
 
         self.clear_input_fields()
-
-        self.stacked_widget.setCurrentIndex(3)
+        self.listWidget.setCurrentRow(3)
         #选中当前的邮件草稿
 
     def clear_input_fields(self):
