@@ -1,5 +1,5 @@
-USER_NAME = "xx"
-PASSWORD = "xx"
+USER_NAME = "CarmelaLongerbeam60@outlook.fr"
+PASSWORD = "ZUGD3qnDHJ3hAr"
 
 class EmailConfig:
     SMTP_SERVER = "smtp-mail.outlook.com"  # SMTP 服务器地址
