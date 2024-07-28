@@ -26,16 +26,16 @@ p, li { white-space: pre-wrap; }
         cc_addresses=["1728913755@qq.com"]
     )
 
-    # # 获取邮件列表
-    # email_list = client.get_email_list(offset=0, limit=16)
-    # for email in email_list:
-    #     print(email)
-#
-    # # 获取特定邮件内容
-    # if email_list:
-    #     email_entity = client.get_email_by_obj_id(email_list[-1].obj_id)
-    #     print("偏移量为 ", email_list[-1].offset_id, " 的邮件内容是:", email_entity.body)
-    # # 删除特定邮件
-    # if email_list:
-    #     delete_response = client.delete_email(email_list[-1].obj_id)
-    #     print("已删除邮件，是否成功:", delete_response)
+    # 获取邮件列表
+    email_list = client.get_email_list(offset=0, limit=16)
+    for email in email_list:
+        print(email)
+
+    # 获取特定邮件内容
+    if email_list:
+        email_entity = client.get_email_by_obj_id(email_list[-1].obj_id)
+        print("偏移量为 ", email_list[-1].offset_id, " 的邮件内容是:", email_entity.body)
+    # 删除特定邮件
+    if email_list:
+        delete_response = client.delete_email(email_list[-1].obj_id)
+        print("已删除邮件，是否成功:", delete_response)

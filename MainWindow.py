@@ -11,6 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from richText import RichTextWidget
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -108,7 +109,6 @@ class Ui_MainWindow(object):
         self.listWidget.setStyleSheet("QListWidget { border: none; }")
 
         self.verticalLayout.addWidget(self.listWidget)
-
 
         self.horizontalLayoutWidget = QtWidgets.QWidget(MainWindow)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(220, 20, 821, 671))
@@ -232,7 +232,6 @@ class Ui_MainWindow(object):
         self.listWidget_3.addItem(item)
         self.stackedWidget.addWidget(self.pageISent)
 
-
         #收件箱
         self.pageInbox = QtWidgets.QWidget()
         self.pageInbox.setObjectName("pageInbox")
@@ -260,7 +259,6 @@ class Ui_MainWindow(object):
         self.listWidget_4.addItem(item)
         self.stackedWidget.addWidget(self.pageInbox)
 
-
         self.pageDrafts = QtWidgets.QWidget()
         self.pageDrafts.setObjectName("pageDrafts")
         self.listWidgetDrafts = QtWidgets.QListWidget(self.pageDrafts)
@@ -269,8 +267,79 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         self.listWidgetDrafts.setFont(font)
         self.listWidgetDrafts.setObjectName("listWidgetDrafts")
-        self.draftsTextBrowser = QtWidgets.QTextBrowser(self.pageDrafts)
-        self.draftsTextBrowser.setGeometry(QtCore.QRect(281, 0, 541, 671))
+
+        # 草稿编辑
+
+        # 收件方
+        self.draftLabelTo = QtWidgets.QLabel(self.pageDrafts)
+        self.draftLabelTo.setGeometry(QtCore.QRect(290, 0, 91, 31))
+        # self.draftLabelCopyTo = QtWidgets.QLabel(self.pageDrafts)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei Light")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setWeight(50)
+        self.draftLabelTo.setFont(font)
+        self.draftLabelTo.setObjectName("draftLabelTo")
+
+        self.draftLineEditTo = QtWidgets.QLineEdit(self.pageDrafts)
+        self.draftLineEditTo.setGeometry(QtCore.QRect(372, 0, 300, 31))
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(11)
+        self.draftLineEditTo.setFont(font)
+        self.draftLineEditTo.setInputMethodHints(QtCore.Qt.ImhNone)
+        self.draftLineEditTo.setText("")
+        self.draftLineEditTo.setObjectName("draftLineEditTo")
+
+
+        # 抄送
+        self.draftLabelCopyTo = QtWidgets.QLabel(self.pageDrafts)
+        self.draftLabelCopyTo.setGeometry(QtCore.QRect(290, 50, 91, 31))
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei Light")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setWeight(50)
+        self.draftLabelCopyTo.setFont(font)
+        self.draftLabelCopyTo.setObjectName("draftLabelCopyTo")
+
+        self.draftLineEditCopyTo = QtWidgets.QLineEdit(self.pageDrafts)
+        self.draftLineEditCopyTo.setGeometry(QtCore.QRect(372, 50, 300, 31))
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(11)
+        self.draftLineEditCopyTo.setFont(font)
+        self.draftLineEditCopyTo.setInputMethodHints(QtCore.Qt.ImhNone)
+        self.draftLineEditCopyTo.setText("")
+        self.draftLineEditCopyTo.setObjectName("draftLineEditCopyTo")
+
+        # 主题
+
+        self.draftLabelSubject = QtWidgets.QLabel(self.pageDrafts)
+        self.draftLabelSubject.setGeometry(QtCore.QRect(290, 100, 91, 31))
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei Light")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setWeight(50)
+        self.draftLabelSubject.setFont(font)
+        self.draftLabelSubject.setObjectName("draftLabelCopyTo")
+
+        self.draftLabelEditSubject = QtWidgets.QLineEdit(self.pageDrafts)
+        self.draftLabelEditSubject.setGeometry(QtCore.QRect(372, 100, 300, 31))
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(11)
+        self.draftLabelEditSubject.setFont(font)
+        self.draftLabelEditSubject.setInputMethodHints(QtCore.Qt.ImhNone)
+        self.draftLabelEditSubject.setText("")
+        self.draftLabelEditSubject.setObjectName("draftLabelEditSubject")
+
+
+
+        self.draftsTextBrowser = RichTextWidget(self.pageDrafts)
+        self.draftsTextBrowser.setGeometry(QtCore.QRect(281, 150, 541, 471))
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(10)
@@ -298,7 +367,6 @@ class Ui_MainWindow(object):
         item.setIcon(icon4)
         self.listWidget_5.addItem(item)
         self.stackedWidget.addWidget(self.pageDrafts)
-
 
         self.pageEmailSent = QtWidgets.QWidget()
         self.pageEmailSent.setObjectName("pageEmailSent")
@@ -332,7 +400,6 @@ class Ui_MainWindow(object):
         self.pushButtonComposeAnotherEmail.setObjectName("pushButtonComposeAnotherEmail")
         self.stackedWidget.addWidget(self.pageEmailSent)
         self.horizontalLayout.addWidget(self.stackedWidget)
-
 
         self.DividingLine = QtWidgets.QFrame(MainWindow)
         self.DividingLine.setObjectName("DividingLine")
@@ -371,15 +438,22 @@ class Ui_MainWindow(object):
         self.listWidget.setSortingEnabled(__sortingEnabled)
         self.labelNewMail.setText(_translate("MainWindow", "新邮件"))
         self.labelTo.setText(_translate("MainWindow", "收件方"))
+        self.labelTo_2.setText(_translate("MainWindow", "抄送"))
         self.labelSubject.setText(_translate("MainWindow", "主题"))
+
+        # 草稿部分
+        self.draftLabelTo.setText(_translate("MainWindow", "收件方"))
+        self.draftLabelCopyTo.setText(_translate("MainWindow", "抄送"))
+        self.draftLabelSubject.setText(_translate("MainWindow", "主题"))
+
         self.pushButtonSend.setText(_translate("MainWindow", "发送"))
         self.pushButtonSave.setText(_translate("MainWindow", "保存"))
-        self.labelTo_2.setText(_translate("MainWindow", "抄送"))
-        self.inboxTextBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Microsoft YaHei UI\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.inboxTextBrowser.setHtml(_translate("MainWindow",
+                                                 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                 "p, li { white-space: pre-wrap; }\n"
+                                                 "</style></head><body style=\" font-family:\'Microsoft YaHei UI\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         __sortingEnabled = self.listWidget_3.isSortingEnabled()
         self.listWidget_3.setSortingEnabled(False)
         item = self.listWidget_3.item(0)
