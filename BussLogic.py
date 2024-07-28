@@ -60,21 +60,23 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.pushButtonSend.clicked.connect(self.click_send)
         self.pushButtonSave.clicked.connect(self.click_save)
 
+        self.sentGetter = SimpleGetSent(self, self.email_db)
         self.inboxGetter = SimpleGetInbox(self, self.email_db)
         self.draftsGetter = SimpleGetDrafts(self, self.email_db)
 
         self.listWidget.itemClicked.connect(self.change_folder)
 
-        # self.main_window.listWidgetInbox.addItem('111')
-        # self.listWidgetInbox = CoverageListWidget()
-        self.listWidgetInbox.setItemDelegate(EmailDelegate())
+        self.listWidgetSent.setItemDelegate(EmailDelegate())
+        self.listWidgetSent.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.listWidgetSent.customContextMenuRequested.connect(self.showListContextMenu)
+        self.listWidgetSent.itemClicked.connect(self.onItemClicked)
 
+        self.listWidgetInbox.setItemDelegate(EmailDelegate())
         self.listWidgetInbox.setContextMenuPolicy(Qt.CustomContextMenu)
         self.listWidgetInbox.customContextMenuRequested.connect(self.showListContextMenu)
         self.listWidgetInbox.itemClicked.connect(self.onItemClicked)
 
         self.listWidgetDrafts.setItemDelegate(EmailDelegate())
-
         self.listWidgetDrafts.setContextMenuPolicy(Qt.CustomContextMenu)
         self.listWidgetDrafts.customContextMenuRequested.connect(self.showListContextMenu)
         self.listWidgetDrafts.itemClicked.connect(self.onItemClicked)
@@ -140,7 +142,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                     return
 
                 self.clear_input_fields()
-
                 self.listWidget.setCurrentRow(1)
             else:
                 QMessageBox.warning(self, 'Error', '邮件发送失败')
@@ -182,9 +183,12 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
     def change_folder(self, item):
         print(item.text())
+        if item.text() == '已发送':
+            self.sentGetter.start()
         if item.text() == '收信箱':
-            # 启动线程运行任务
             self.inboxGetter.start()
+        if item.text() == '收信箱':
+            self.draftsGetter.start()
 
     def showListContextMenu(self, pos: QPoint):
         contextMenu = QMenu(self)
@@ -206,6 +210,10 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         contextMenu.exec_(self.listWidgetInbox.mapToGlobal(pos))
 
     def refreshList(self):
+
+        if self.listWidget.currentItem().text() == '已发送':
+            self.sentGetter.start()
+
         if self.listWidget.currentItem().text() == '收件箱':
             self.inboxGetter.start()
 
@@ -213,7 +221,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             self.draftsGetter.start()
 
     def deleteItem(self):
-
 
         if self.listWidget.currentItem().text() == '收件箱':
             selectedItem = self.listWidgetInbox.currentItem()
@@ -270,7 +277,20 @@ class SimpleGetEmail(QThread):
         super(SimpleGetEmail, self).__init__()
         self.main_win = main_win
         self.email_db = email_db
-
+class SimpleGetSent(SimpleGetEmail):
+    def run(self):
+        try:
+            self.main_win.listWidgetSent.clear()
+            # 从数据库获取已发送邮件
+            emails = self.email_db.get_sent_emails()
+            print(emails)
+            for email in emails:
+                list_item = QListWidgetItem()
+                list_item.setData(Qt.UserRole, email)
+                self.main_win.listWidgetSent.addItem(list_item)
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'获取数据库的邮件失败: {str(e)}')
+            print(e)
 
 class SimpleGetInbox(SimpleGetEmail):
     def run(self):
