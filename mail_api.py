@@ -11,7 +11,7 @@ from typing import Optional, Any
 class Email:
     def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, offset_id: int = 0,
                  is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', obj_id="",copy_for:str="",
-                 header_dict: Any = None):
+                 header_dict: Any = None, attachments: list[str] = []):
         self.sender = sender
         self.receiver = receiver
         self.title = title
@@ -24,6 +24,9 @@ class Email:
         self.obj_id = obj_id
         self.copy_for = copy_for
         self.header_dict = header_dict
+        if attachments is None:
+            attachments = []
+        self.attachments = attachments
 
     def __repr__(self):
         return f"<Email(title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
@@ -179,6 +182,10 @@ class EmailClient:
             if body_part_content_type == "text/plain" and fetch_html:
                 continue
             elif body_part_content_type == "text/html" and not fetch_html:
+                continue
+
+            if "image" in body_part_content_type:
+                email.attachments.append(body_seg[1])
                 continue
 
             for seg in body_seg[1:]:

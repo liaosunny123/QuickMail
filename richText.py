@@ -94,25 +94,29 @@ class RichTextWidget(QWidget):
             color_button = self.font_color_selector
             button_style = 'border:1px solid rgb(220,220,220);'
             if colors:
-                button_style = 'border:1px solid rgb(220,220,220);color:{}'.format(colors[0])
+                button_style += f'color:{colors[0]};'
         elif color_type == 'font_bg_color':
             colors = self.recently_font_bg_color
             color_button = self.font_bg_color_selector
             button_style = 'border:1px solid rgb(220,220,220);'
             if colors:
-                button_style = 'border:1px solid rgb(220,220,220);background-color:{}'.format(colors[0])
+                button_style += f'background-color:{colors[0]};'
         else:
             return
+
         old_menu = color_button.menu()
         if old_menu:
             old_menu.deleteLater()
+
         menu = QMenu()
         for color_item in colors:
-            pix = QPixmap('icon/rich_text/color_icon.png')
+            pix = QPixmap(20, 20)
             pix.fill(QColor(color_item))
             ico = QIcon(pix)
             action = menu.addAction(ico, color_item)
-            action.triggered.connect(lambda c=color_item: self.change_current_color(color_type, c))
+            action.setText(f'{color_item.upper()}')
+            action.triggered.connect(lambda _, c=color_item: self.change_current_color(color_type, c))
+
         more_action = menu.addAction(QIcon('icon/rich_text/more.png'), '更多颜色')
         more_action.triggered.connect(lambda: self.select_more_color(color_type))
         color_button.setStyleSheet(button_style)
@@ -134,17 +138,19 @@ class RichTextWidget(QWidget):
             colors = self.recently_font_bg_color
         else:
             return
+
         if color in colors:
-            color_index = colors.index(color)
-            colors.insert(0, colors.pop(color_index))
-        else:
-            colors[0] = color
+            colors.remove(color)
+        colors.insert(0, color)
+        if len(colors) > 5:
+            colors.pop()
+
         self.update_recently_colors(color_type)
 
         if color_type == 'font_color':
-            self.change_font_color(colors[0])
-        if color_type == 'font_bg_color':
-            self.change_font_bg_color(colors[0])
+            self.change_font_color(color)
+        elif color_type == 'font_bg_color':
+            self.change_font_bg_color(color)
 
     def change_font(self):
         self.current_font_family = self.font_selector.currentFont().family()
@@ -210,3 +216,6 @@ class RichTextWidget(QWidget):
 
     def toPlainText(self):
         return self.text_edit.toPlainText()
+
+    def setHtml(self, html: str):
+        return self.text_edit.setHtml(html)

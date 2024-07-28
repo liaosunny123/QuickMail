@@ -60,6 +60,11 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.pushButtonSend.clicked.connect(self.click_send)
         self.pushButtonSave.clicked.connect(self.click_save)
 
+
+
+        self.list_widget.currentRowChanged.connect(self.display_subpage)
+
+
         self.sentGetter = SimpleGetSent(self, self.email_db)
         self.inboxGetter = SimpleGetInbox(self, self.email_db)
         self.draftsGetter = SimpleGetDrafts(self, self.email_db)
@@ -81,10 +86,9 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.listWidgetDrafts.customContextMenuRequested.connect(self.showListContextMenu)
         self.listWidgetDrafts.itemClicked.connect(self.onItemClicked)
 
-        self.inboxTextBrowser.setHtml('<h1 style="color: green;">选一个邮件查看内容</h1>')
-        self.draftsTextBrowser.setHtml('<h1 style="color: green;">选一个邮件查看内容</h1>')
 
-        self.change_stacked_widget()
+
+
         self.client = EmailClient(
             "smtp-mail.outlook.com",  # SMTP 服务器地址
             587,  # SMTP 端口
@@ -94,15 +98,21 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             data_store.PASSWORD  # 密码
         )
 
-    def change_stacked_widget(self):
-        self.list_widget.currentRowChanged.connect(self.display_subpage)
 
     def display_subpage(self, i):
         self.stacked_widget.setCurrentIndex(i)
-        if (i==0):
+        if (i == 0):
             self.DividingLine.show()
         else:
             self.DividingLine.hide()
+
+    def change_folder(self, item):
+        if item.text() == '已发送':
+            self.sentGetter.start()
+        if item.text() == '收信箱':
+            self.inboxGetter.start()
+        if item.text() == '草稿箱':
+            self.draftsGetter.start()
 
 
     def click_send(self):
@@ -143,6 +153,9 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
                 self.clear_input_fields()
                 self.listWidget.setCurrentRow(1)
+                self.sentGetter.start()
+                #选中当前的
+
             else:
                 QMessageBox.warning(self, 'Error', '邮件发送失败')
         except Exception as e:
@@ -155,7 +168,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         body = self.rich_text_widget.toHtml()
 
         email = Email(
-            sender=data_store.USER_NAME,#记得改回登录账号
+            sender=data_store.USER_NAME,  # 记得改回登录账号
             receiver=recipient,
             copy_for=','.join(cc),
             title=subject,
@@ -172,7 +185,8 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
         self.clear_input_fields()
         self.listWidget.setCurrentRow(3)
-        #选中当前的邮件草稿
+        self.draftsGetter.start()
+
 
     def clear_input_fields(self):
         self.lineEditTo.clear()
@@ -180,15 +194,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.lineEditSubject.clear()
         self.rich_text_widget.text_edit.clear()
 
-
-    def change_folder(self, item):
-        print(item.text())
-        if item.text() == '已发送':
-            self.sentGetter.start()
-        if item.text() == '收信箱':
-            self.inboxGetter.start()
-        if item.text() == '收信箱':
-            self.draftsGetter.start()
 
     def showListContextMenu(self, pos: QPoint):
         contextMenu = QMenu(self)
@@ -210,7 +215,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         contextMenu.exec_(self.listWidgetInbox.mapToGlobal(pos))
 
     def refreshList(self):
-
         if self.listWidget.currentItem().text() == '已发送':
             self.sentGetter.start()
 
@@ -220,7 +224,57 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         if self.listWidget.currentItem().text() == '草稿箱':
             self.draftsGetter.start()
 
+    def onItemClicked(self, item: QListWidgetItem):
+        # print(item)
+        email: Email = item.data(Qt.UserRole)
+        if email:
+            if self.listWidget.currentItem().text() == '已发送':
+                print(email)
+                self.sentTextBrowser.setHtml(f"""
+                   <h2 style="color: #0073e6; margin-bottom: 10px;">{email.title}</h2>
+                   <p style="margin: 5px 3px;"><strong>发件人:</strong> {email.sender}</p>
+                   <p style="margin: 5px 3px;"><strong>收件人:</strong> {email.receiver}</p>
+                   <p style="margin: 5px 3px;"><strong>抄送人:</strong> {email.copy_for}</p>
+                   <p style="margin: 5px 3px 2px 3px;"><strong>时间:</strong> {email.timestamp}</p>
+                   <hr style="margin: 0;">
+                   <p style="margin: 3px 3px;"><strong>正文:</strong></p>
+                   <div style="margin: 3px 3px;">{email.body}</div>
+                   """)
+
+            if self.listWidget.currentItem().text() == '收信箱':
+                self.inboxTextBrowser.setHtml(f"""
+                   <h2 style="color: #0073e6; margin-bottom: 10px;">{email.title}</h2>
+                   <p style="margin: 5px 3px;"><strong>发件人:</strong> {email.sender}</p>
+                   <p style="margin: 5px 3px;"><strong>收件人:</strong> {email.receiver}</p>
+                   <p style="margin: 5px 3px;"><strong>抄送人:</strong> {email.copy_for}</p>
+                   <p style="margin: 5px 3px 2px 3px;"><strong>时间:</strong> {email.timestamp}</p>
+                   <hr style="margin: 0;">
+                   <p style="margin: 3px 3px;"><strong>正文:</strong></p>
+                   <div style="margin: 3px 3px;">{email.body}</div>
+                   """)
+
+            if self.listWidget.currentItem().text() == '草稿箱':
+                self.draftLineEditTo.setText(email.sender)
+                self.draftLineEditCopyTo.setText(email.copy_for)
+                self.draftLabelEditSubject.setText(email.title)
+                self.draftsTextBrowser.setHtml(email.body)
+
+    def clearDraftFields(self):
+        self.draftLineEditTo.clear()
+        self.draftLineEditCopyTo.clear()
+        self.draftLabelEditSubject.clear()
+        self.draftsTextBrowser.text_edit.clear()
+
+
     def deleteItem(self):
+
+        if self.listWidget.currentItem().text() == '已发送':
+            selectedItem = self.listWidgetSent.currentItem()
+            if selectedItem:
+                self.listWidgetSent.takeItem(self.listWidgetSent.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+                self.email_db.delete_email(email.obj_id, "sent")
+                self.sentTextBrowser.clear()
 
         if self.listWidget.currentItem().text() == '收件箱':
             selectedItem = self.listWidgetInbox.currentItem()
@@ -238,37 +292,16 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                 )
 
                 client.delete_email(email.obj_id)
-                self.email_db.delete_email(email.obj_id)
+                self.email_db.delete_email(email.obj_id, "inbox")
+                self.inboxTextBrowser.clear()
 
         if self.listWidget.currentItem().text() == '草稿箱':
             selectedItem = self.listWidgetDrafts.currentItem()
             if selectedItem:
                 self.listWidgetDrafts.takeItem(self.listWidgetDrafts.row(selectedItem))
                 email = selectedItem.data(Qt.UserRole)
-
-                # 删除草稿箱？
-                # client.delete_email(email.obj_id)
-
-    def onItemClicked(self, item: QListWidgetItem):
-        # print(item)
-        email: Email = item.data(Qt.UserRole)
-        # client = EmailClient(
-        #     data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
-        #     data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
-        #     data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
-        #     data_store.EmailConfig.POP_PORT,  # POP 端口
-        #     data_store.USER_NAME,  # 用户名
-        #     data_store.PASSWORD  # 密码
-        # )
-        # print(email)
-        if email:
-            # TODO 这里一调用就报错，无法解析 body：UnicodeDecodeError('utf-8',xxx)
-            # fullEmail = client.get_email_by_obj_id(email.obj_id)
-            # self.inboxTextBrowser.setHtml(fullEmail)
-            # self.draftsTextBrowser.setHtml(fullEmail)
-            self.inboxTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
-            self.draftsTextBrowser.setHtml(f'<h1 style="color: blue;">{email.sender}</h1><p>{email.title}</p>')
-
+                self.email_db.delete_email(email.obj_id, "drafts")
+                self.clearDraftFields()
 
 
 
@@ -277,6 +310,7 @@ class SimpleGetEmail(QThread):
         super(SimpleGetEmail, self).__init__()
         self.main_win = main_win
         self.email_db = email_db
+
 class SimpleGetSent(SimpleGetEmail):
     def run(self):
         try:
@@ -299,7 +333,7 @@ class SimpleGetInbox(SimpleGetEmail):
 
             # 从数据库获取收件箱邮件
             emails_from_db = self.email_db.get_inbox()
-            print(emails_from_db)
+            print("inbox: ", emails_from_db)
             for elem in emails_from_db:
                 # self.main_win.listWidgetInbox.addItem(elem.title)
                 list_item = QListWidgetItem()
@@ -316,7 +350,7 @@ class SimpleGetInbox(SimpleGetEmail):
                 data_store.PASSWORD  # 密码
             )
             # 网络可用则再从网络获取邮件
-            emails_from_net: List[Email] = client.get_email_list(0, 10)
+            emails_from_net: List[Email] = client.get_email_list(offset=0, limit=9999)
             for elem in emails_from_net:
                 if elem in emails_from_db:
                     continue
@@ -324,9 +358,7 @@ class SimpleGetInbox(SimpleGetEmail):
                 # 新邮件加到数据库
                 self.email_db.add_email(elem)
 
-                # 加到列表中
-                # self.main_win.listWidgetInbox.addItem(elem.title)
-                # self.main_win.listWidgetInbox.setData(Qt.UserRole, elem)
+
         except Exception as e:
             # QMessageBox.warning(self.main_win, "出错", f'出错了：{e}')
             print(e)
@@ -339,14 +371,14 @@ class SimpleGetDrafts(SimpleGetEmail):
 
             # 从数据库获取草稿
             drafts_from_db = self.email_db.get_draft_emails()
-            print(drafts_from_db)
+            print("drafts: ", drafts_from_db)
 
             # 展示到列表
             for elem in drafts_from_db:
                 # self.main_win.listWidgetInbox.addItem(elem.title)
                 list_item = QListWidgetItem()
                 list_item.setData(Qt.UserRole, elem)
-                self.main_win.listWidgetInbox.addItem(list_item)
+                self.main_win.listWidgetDrafts.addItem(list_item)
 
         except Exception as e:
             # QMessageBox.warning(self.main_win, "出错", f'出错了：{e}')
@@ -358,11 +390,12 @@ class EmailDelegate(QStyledItemDelegate):
         painter.save()
 
         email: [Email] = index.data(Qt.UserRole)
-        # print("133: ", email)
         if email:
             rect = option.rect
             sender = email.sender
+            receiver=email.receiver
             subject = email.title
+            type= email.folder
 
             # Adjust rect to provide spacing between items
             margin = 2
@@ -380,8 +413,11 @@ class EmailDelegate(QStyledItemDelegate):
             # Draw sender
             painter.setFont(QFont("Arial", 10, QFont.Bold))
             painter.setPen(Qt.black)
-            painter.drawText(inner_rect.adjusted(10, 5, -10, -inner_rect.height() // 2), Qt.AlignLeft, f"<{sender}>")
-
+            if type=="inbox" :
+                painter.drawText(inner_rect.adjusted(10, 5, -10, -inner_rect.height() // 2), Qt.AlignLeft, f"<{sender}>")
+            else :
+                painter.drawText(inner_rect.adjusted(10, 5, -10, -inner_rect.height() // 2), Qt.AlignLeft,
+                                 f"<{receiver}>")
             # Draw subject
             painter.setFont(QFont("Arial", 10))
             painter.setPen(Qt.black)
