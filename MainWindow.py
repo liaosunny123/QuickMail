@@ -380,12 +380,20 @@ class Ui_MainWindow(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Microsoft YaHei UI\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        __sortingEnabled = self.listWidget_3.isSortingEnabled()
+        self.listWidget_3.setSortingEnabled(False)
+        item = self.listWidget_3.item(0)
+        item.setText(_translate("MainWindow", "已发送"))
+        self.listWidget_3.setSortingEnabled(__sortingEnabled)
+
         __sortingEnabled = self.listWidget_4.isSortingEnabled()
         self.listWidget_4.setSortingEnabled(False)
         item = self.listWidget_4.item(0)
         item.setText(_translate("MainWindow", "收信箱"))
         self.listWidget_4.setSortingEnabled(__sortingEnabled)
+
         self.Resend_button.setText(_translate("MainWindow", "Send"))
+
         __sortingEnabled = self.listWidget_5.isSortingEnabled()
         self.listWidget_5.setSortingEnabled(False)
         item = self.listWidget_5.item(0)
