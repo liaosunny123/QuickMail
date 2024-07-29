@@ -1,15 +1,18 @@
 import base64
 import datetime
+import quopri
+import re
 import socket
 import ssl
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Any
 
 
 # 这个类应该是在mail_api.py中的
 class Email:
-    def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, offset_id: int=0,
-                 is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', obj_id="",copy_for:str=""):
+    def __init__(self, sender: str, receiver: str, title: str, body: str, timestamp: datetime.time, offset_id: int = 0,
+                 is_read: bool = False, is_deleted: bool = False, folder: str = 'inbox', obj_id="",copy_for:str="",
+                 header_dict: Any = None, attachments: list[str] = []):
         self.sender = sender
         self.receiver = receiver
         self.title = title
@@ -20,11 +23,21 @@ class Email:
         self.folder = folder
         self.offset_id = offset_id
         self.obj_id = obj_id
-        self.copy_for=copy_for
+        self.copy_for = copy_for
+        self.header_dict = header_dict
+        if attachments is None:
+            attachments = []
+        self.attachments = attachments
 
     def __repr__(self):
         return f"<Email(title={self.title}, sender={self.sender}, receiver={self.receiver}, folder={self.folder})>"
 
+
+    def __eq__(self, other):
+        if isinstance(other, Email):
+            return self.obj_id == other.obj_id
+
+        return False
 
 class EmailClient:
     def __init__(self, smtp_server, smtp_port, pop_server, pop_port, username, password):
@@ -80,7 +93,36 @@ class EmailClient:
         email.offset_id = email_id
         return email
 
-    def _parse_headers(self, headers):
+    def _decode_mime_word(self, word):
+        # Regular expression to match the pattern =?charset?encoding?encoded_text?=
+        match = re.match(r'=\?(?P<charset>.*?)\?(?P<encoding>.*?)\?(?P<encoded_text>.*?)\?=', word)
+        if not match:
+            return word  # Return the word as is if it doesn't match the pattern
+
+        charset = match.group('charset')
+        encoding = match.group('encoding').lower()
+        encoded_text = match.group('encoded_text')
+
+        if encoding == 'b':  # Base64 encoded
+            byte_string = base64.b64decode(encoded_text)
+        elif encoding == 'q':  # Quoted-Printable encoded
+            byte_string = quopri.decodestring(encoded_text.replace('_', ' '))
+        else:
+            raise ValueError(f"Unknown encoding: {encoding}")
+
+        return byte_string.decode(charset)
+
+    def _decode_mime_words(self, header):
+        decoded_string = ''
+        words = re.split(r'(\s+)', header)  # Split by spaces but keep them in the result
+        for word in words:
+            if word.startswith('=?') and word.endswith('?='):
+                decoded_string += self._decode_mime_word(word)
+            else:
+                decoded_string += word
+        return decoded_string
+
+    def _parse_header_in_dict(self, headers):
         processed_headers = []
         for line in headers.split('\r\n'):
             if line.startswith(' ') or line.startswith('\t'):
@@ -94,26 +136,78 @@ class EmailClient:
                 key, value = line.split(':', 1)
                 header_dict[key.strip()] = value.strip()
 
+        return header_dict
+
+    def _parse_headers(self, headers):
+        header_dict = self._parse_header_in_dict(headers)
+
         email = Email(
-            sender=header_dict.get('From', ''),
-            receiver=header_dict.get('To', ''),
-            title=header_dict.get('Subject', ''),
+            sender=self._decode_mime_words(header_dict.get('From', '').rsplit(" ", 1)[0].strip('"')) + ' ' +
+                   header_dict.get('From', '').rsplit(" ", 1)[1] if len(
+                header_dict.get('From', '').rsplit(" ", 1)) == 2 else header_dict.get('From', ''),
+            receiver=self._decode_mime_words(header_dict.get('To', '').rsplit(" ", 1)[0].strip('"')) + ' ' +
+                     header_dict.get('To', '').rsplit(" ", 1)[1] if len(
+                header_dict.get('To', '').rsplit(" ", 1)) == 2 else header_dict.get('To', ''),
+            title=self._decode_mime_words(header_dict.get('Subject', '')),
             body='',
-            timestamp=datetime.strptime(header_dict.get('Date', ''), "%a, %d %b %Y %H:%M:%S +0000 (UTC)"),
-            offset_id=-1
+            timestamp=datetime.strptime(header_dict.get('Date', '').split("+")[0].strip().split("-")[0].strip(),
+                                        "%a, %d %b %Y %H:%M:%S"),
+            offset_id=-1,
+            header_dict=header_dict
         )
         return email
 
-    def _parse_email(self, raw_email):
+    def _parse_email(self, raw_email, fetch_html):
         headers, body = raw_email.split('\r\n\r\n', 1)
         email = self._parse_headers(headers)
-        email.body = body[:-5]
+
+        def decode_base64(encoded_text, decoded_charset="utf-8"):
+            return base64.b64decode(encoded_text).decode(decoded_charset)
+
+        content_type: str = email.header_dict["Content-Type"]
+
+        if "multipart/alternative" not in content_type and "boundary" not in content_type:
+            # 那么就直接返回就好了
+            email.body = body[:-5]
+            return email
+
+        boundary = "--" + content_type.split(";")[1].split('"')[1]
+        body_parts: list[str] = body.split(boundary)
+        for body_part in body_parts[1:-1]:
+            body_seg = body_part.split("\r\n\r\n")
+            header = body_seg[0].strip("\r\n")
+            header_dict = self._parse_header_in_dict(header)
+            body_part_content_type = header_dict["Content-Type"].strip().split(";")[0]
+            charset = header_dict["Content-Type"].strip().split(";")[1].split("=")[1].strip('"')
+            encoded_type = header_dict["Content-Transfer-Encoding"]
+            if body_part_content_type == "text/plain" and fetch_html:
+                continue
+            elif body_part_content_type == "text/html" and not fetch_html:
+                continue
+
+            if "image" in body_part_content_type:
+                email.attachments.append(body_seg[1])
+                continue
+
+            for seg in body_seg[1:]:
+                if encoded_type == "quoted-printable":
+                    email.body += quopri.decodestring(seg.replace("=\r\n", "").replace("=\n", "")).decode(charset)
+                elif encoded_type == "base64":
+                    email.body += decode_base64(seg, decoded_charset=charset)
+                elif encoded_type == "7bit" or encoded_type == "8bit":
+                    email.body += seg
+                elif encoded_type == "binary":
+                    email.body += seg
+                else:
+                    email.body += decode_base64(seg)
+        email.body = email.body.strip()
         return email
 
     def send_email(self, to_address: str, subject: str, body: str, cc_addresses: list[str] = None,
-                   is_html_body=False) -> bool:
+                   is_html_body=True) -> bool:
         """
         向指定地址发送邮件
+        :param is_html_body:
         :param to_address: 收件人地址
         :param subject: 邮件主题
         :param body: 邮件内容，提供一个纯文本内容
@@ -143,8 +237,8 @@ class EmailClient:
             self._smtp_command(base64.b64encode(self.password.encode()).decode())
 
             self._smtp_command(f"MAIL FROM:<{self.username}>")
+            self._smtp_command(f"RCPT TO:<{to_address}>")
 
-            # Add CC addresses if provided
             if cc_addresses:
                 for cc in cc_addresses:
                     self._smtp_command(f"RCPT TO:<{cc}>")
@@ -159,6 +253,8 @@ class EmailClient:
                 headers += "Content-Type: text/plain; charset=utf-8\r\n"
             if cc_addresses:
                 headers += f"Cc: {', '.join(cc_addresses)}\r\n"
+
+            body = body.replace('\r\n', '\n').replace('\n', '\r\n')
             message = f"{headers}\r\n{body}\r\n."
             self._smtp_command(message)
             self._smtp_command("QUIT")
@@ -181,7 +277,7 @@ class EmailClient:
             parts = line.split()
             if len(parts) >= 2:
                 email_offset_id = parts[0]
-                if obj_id == self._pop3_command("UIDL " + email_offset_id).split(" ")[1]:
+                if obj_id == self._pop3_command("UIDL " + email_offset_id).split(" ")[1].strip():
                     return email_offset_id
 
         return ""
@@ -210,9 +306,10 @@ class EmailClient:
         except Exception as e:
             raise Exception("获取邮件列表时出错:", e)
 
-    def get_email_by_obj_id(self, obj_id: str) -> Optional[Email]:
+    def get_email_by_obj_id(self, obj_id: str, fetch_html: bool = True) -> Optional[Email]:
         """
         获取邮件内容
+        :param fetch_html: 如果为 True，那么在邮件提供了 text/plain 和 text/html 两种方法的情况下，使用 text/html 作为 Body，否则使用 text/plain
         :param obj_id: 唯一 ID
         :return:
         """
@@ -221,7 +318,7 @@ class EmailClient:
                 return None
             offset_id = self.get_offset_id_by_obj_id(obj_id)
             response = self._pop3_command(f'RETR {offset_id}', bypass_ok=True)
-            return self._parse_email(response)
+            return self._parse_email(response, fetch_html)
         except Exception as e:
             raise Exception("获取邮件内容时出错:", e)
 

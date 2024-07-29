@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="fixBugs: 各配置项数据类型修正">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BussLogic.py" beforeDir="false" afterPath="$PROJECT_DIR$/BussLogic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_store.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_store.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;For-December&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/liaosunny123/QuickMail.git&quot;,
+    &quot;accountId&quot;: &quot;d1d04b4a-8733-4ac5-b167-e26a45eda14f&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2jda7s1rpnJ6l4M7tlZp3Q74tRa" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.BussLogic.executor": "Run",
+    "Python.mail_api.executor": "Debug",
+    "Python.mail_test.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "fo",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/forDece/PycharmProjects/QuickMail-Test",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="C:\Users\forDece\PycharmProjects\QuickMail-Test" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="BussLogic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="QuickMailTmp" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BussLogic.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.BussLogic" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
+        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="728b0891-617d-4abd-8fe8-128fcdf48a99" name="更改" comment="" />
+      <created>1721719243770</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1721719243770</updated>
+      <workItem from="1721719244834" duration="1708000" />
+      <workItem from="1721721116272" duration="2870000" />
+      <workItem from="1721733845235" duration="1058000" />
+      <workItem from="1721738504542" duration="67000" />
+      <workItem from="1721738582354" duration="1786000" />
+      <workItem from="1721896905349" duration="799000" />
+      <workItem from="1721965372327" duration="5689000" />
+      <workItem from="1722230518331" duration="1390000" />
+    </task>
+    <task id="LOCAL-00001" summary="update: 添加一个测试用的子窗口">
+      <option name="closed" value="true" />
+      <created>1721738835374</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1721738835374</updated>
+    </task>
+    <task id="LOCAL-00002" summary="update: 客户端">
+      <option name="closed" value="true" />
+      <created>1721739009694</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1721739009694</updated>
+    </task>
+    <task id="LOCAL-00003" summary="update: data_store">
+      <option name="closed" value="true" />
+      <created>1721739187153</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1721739187153</updated>
+    </task>
+    <task id="LOCAL-00004" summary="update: 刷新和删除">
+      <option name="closed" value="true" />
+      <created>1721823723530</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1721823723530</updated>
+    </task>
+    <task id="LOCAL-00005" summary="update: 删除不必要的文件">
+      <option name="closed" value="true" />
+      <created>1721837961257</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1721837961257</updated>
+    </task>
+    <task id="LOCAL-00006" summary="update: 继承QThread实现异步数据处理">
+      <option name="closed" value="true" />
+      <created>1721840162337</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1721840162337</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update: 实现获取收件箱邮件并添加到数据库">
+      <option name="closed" value="true" />
+      <created>1721842832187</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1721842832187</updated>
+    </task>
+    <task id="LOCAL-00008" summary="update: 右键菜单，删除刷新">
+      <option name="closed" value="true" />
+      <created>1721970583798</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1721970583798</updated>
+    </task>
+    <task id="LOCAL-00009" summary="update: inbox界面">
+      <option name="closed" value="true" />
+      <created>1721971022008</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1721971022008</updated>
+    </task>
+    <task id="LOCAL-00010" summary="update: 处理合并问题">
+      <option name="closed" value="true" />
+      <created>1721971619431</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1721971619431</updated>
+    </task>
+    <task id="LOCAL-00011" summary="update: 修改代码结构，实现刷新">
+      <option name="closed" value="true" />
+      <created>1721973515091</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1721973515092</updated>
+    </task>
+    <task id="LOCAL-00012" summary="update: 删除邮件">
+      <option name="closed" value="true" />
+      <created>1721973789759</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1721973789759</updated>
+    </task>
+    <task id="LOCAL-00013" summary="update: 同时从数据库和云端删除">
+      <option name="closed" value="true" />
+      <created>1721973915969</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1721973915969</updated>
+    </task>
+    <task id="LOCAL-00014" summary="update: 收件箱草稿箱二级菜单+富文本展示">
+      <option name="closed" value="true" />
+      <created>1721974966812</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1721974966812</updated>
+    </task>
+    <task id="LOCAL-00015" summary="update: 每次调用smtp和pop时新建客户端">
+      <option name="closed" value="true" />
+      <created>1722004474856</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1722004474856</updated>
+    </task>
+    <task id="LOCAL-00016" summary="update: 删掉多余的刷新和删除按钮">
+      <option name="closed" value="true" />
+      <created>1722005280595</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1722005280595</updated>
+    </task>
+    <task id="LOCAL-00017" summary="fixBugs: 各配置项数据类型修正">
+      <option name="closed" value="true" />
+      <created>1722006459186</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1722006459186</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="update: 添加一个测试用的子窗口" />
+    <MESSAGE value="update: 客户端" />
+    <MESSAGE value="update: data_store" />
+    <MESSAGE value="update: 刷新和删除" />
+    <MESSAGE value="update: 删除不必要的文件" />
+    <MESSAGE value="update: 继承QThread实现异步数据处理" />
+    <MESSAGE value="update: 实现获取收件箱邮件并添加到数据库" />
+    <MESSAGE value="update: 右键菜单，删除刷新" />
+    <MESSAGE value="update: inbox界面" />
+    <MESSAGE value="update: 处理合并问题" />
+    <MESSAGE value="update: 修改代码结构，实现刷新" />
+    <MESSAGE value="update: 删除邮件" />
+    <MESSAGE value="update: 同时从数据库和云端删除" />
+    <MESSAGE value="update: 收件箱草稿箱二级菜单+富文本展示" />
+    <MESSAGE value="update: 每次调用smtp和pop时新建客户端" />
+    <MESSAGE value="update: 删掉多余的刷新和删除按钮" />
+    <MESSAGE value="fixBugs: 配置文件类型" />
+    <MESSAGE value="fixBugs: 各配置项数据类型修正" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixBugs: 各配置项数据类型修正" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BussLogic.py</url>
+          <line>61</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BussLogic.py</url>
+          <line>366</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/QuickMailTmp$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1722231518590" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMail$mail_test.coverage" NAME="mail_test 覆盖结果" MODIFIED="1721735115164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMail_Test$BussLogic.coverage" NAME="BussLogic 覆盖结果" MODIFIED="1722007310524" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuickMail$mail_api.coverage" NAME="mail_api 覆盖结果" MODIFIED="1721735109423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

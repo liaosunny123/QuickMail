@@ -1,20 +1,27 @@
-# from SignInWindow import Ui_Dialog as SignInWindow_Ui
+from typing import List
+
+from PyQt5.QtCore import QThread, Qt, QRect, QPoint
+from PyQt5.QtWidgets import QMessageBox, QStyledItemDelegate, QStyle, QListWidget, QListWidgetItem, QMenu, QAction, \
+    QApplication
+
+import data_store
 from SigninWindow import Ui_Dialog as SignInWindow_Ui
 from MainWindow import Ui_MainWindow as MainWindow_Ui
+from SubWindow import MyWidget as SubWindow_Ui
 from PyQt5 import QtWidgets,QtGui
-from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import sys
-from mailserver import *
-import traceback
-from PyQt5.QtGui import QPixmap,QPainter
+
+from mail_api import EmailClient
+from PyQt5.QtGui import QPixmap, QPainter, QColor, QFont
 from emailDB import *
+
 
 class SignInWindowUi(SignInWindow_Ui, QtWidgets.QDialog):
     def __init__(self):
         super(SignInWindowUi, self).__init__()
-        BussLogic.win_stage=0
+        BussLogic.win_stage = 0
         self.setupUi(self)
-        self.mail_server_address = "smtp.qq.com" # Default
+        self.mail_server_address = "smtp.qq.com"  # Default
         self.comboBoxServerAddress.activated.connect(self.select_server_address)
 
     def fetch_info(self):
@@ -46,226 +53,520 @@ class SignInWindowUi(SignInWindow_Ui, QtWidgets.QDialog):
         elif self.comboBoxServerAddress.currentText() == "163 Mail":
             self.mail_server_address = "smtp.163.com"
 
+
 class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, email_db: EmailDatabase):
         super(MainWindowUi, self).__init__()
         self.setupUi(self)
         self.list_widget = self.listWidget
         self.stacked_widget = self.stackedWidget
-        self.change_stacked_widget()
+        self.listWidgetInbox = self.listWidgetInbox
 
-    def change_stacked_widget(self):
+        self.email_db = email_db
+        # self.sub_window = SubWindow()
+        self.cur_item = None
+
+        self.pushButtonSend.clicked.connect(self.click_send)
+        self.pushButtonSave.clicked.connect(self.click_save)
+
+
+        self.Resend_button.clicked.connect(self.click_resend)
+        self.ResaveButtom.clicked.connect(self.click_resave)
+
+
+
         self.list_widget.currentRowChanged.connect(self.display_subpage)
+
+
+        self.sentGetter = SimpleGetSent(self, self.email_db)
+        self.inboxGetter = SimpleGetInbox(self, self.email_db)
+        self.draftsGetter = SimpleGetDrafts(self, self.email_db)
+
+        self.listWidget.itemClicked.connect(self.change_folder)
+
+        self.listWidgetSent.setItemDelegate(EmailDelegate())
+        self.listWidgetSent.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.listWidgetSent.customContextMenuRequested.connect(self.showListContextMenu)
+        self.listWidgetSent.itemClicked.connect(self.onItemClicked)
+
+        self.listWidgetInbox.setItemDelegate(EmailDelegate())
+        self.listWidgetInbox.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.listWidgetInbox.customContextMenuRequested.connect(self.showListContextMenu)
+        self.listWidgetInbox.itemClicked.connect(self.onItemClicked)
+
+        self.listWidgetDrafts.setItemDelegate(EmailDelegate())
+        self.listWidgetDrafts.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.listWidgetDrafts.customContextMenuRequested.connect(self.showListContextMenu)
+        self.listWidgetDrafts.itemClicked.connect(self.onItemClicked)
+
+
+
+
+        self.client = EmailClient(
+            "smtp-mail.outlook.com",  # SMTP 服务器地址
+            587,  # SMTP 端口
+            "outlook.office365.com",  # POP 服务器地址
+            995,  # POP 端口,  # SMTP 服务器地址
+            data_store.USER_NAME,  # 用户名
+            data_store.PASSWORD  # 密码
+        )
+
 
     def display_subpage(self, i):
         self.stacked_widget.setCurrentIndex(i)
-
-    def set_text_edit(self, mail_server, username, password):
-        text = mail_server + username + password
-        self.textEdit.setText(text)
-
-class MailServer(Smtp, Pop3):
-    def __init__(self):
-        self.mail_server = " "
-        self.username = " "
-        self.password = " "
-        self.smtp = None
-        self.pop3 = None
-
-    def info_init(self, mail_server, username, password):
-        self.mail_server = mail_server
-        self.username = username
-        self.password = password
-        try:
-            self.smtp = Smtp(mailserver=mail_server, username=username, password=password)
-            self.pop3 = Pop3(mailserver=mail_server, username=username, password=password)
-        except Exception as e:
-            print(e)
+        if (i == 0):
+            self.DividingLine.show()
         else:
-            print(mail_server, username, password)
+            self.DividingLine.hide()
 
-class BussLogic:
-    def __init__(self):
-        self.sign_in_window = SignInWindowUi()
-        self.main_window = MainWindowUi()
-        self.mail_server = MailServer()
-        self.sender_proc = None
-        self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
-        self.main_window.pushButtonSend.clicked.connect(self.click_send)
-        self.main_window.pushButtonSave.clicked.connect(self.click_save)
-        self.main_window.Reflesh_Button.clicked.connect(self.reflesh_recv)
-        self.main_window.listWidget.itemClicked.connect(self.show_recv)
-        self.main_window.listWidget_2.itemClicked.connect(self.show_mail)
-        self.main_window.listWidget.itemClicked.connect(self.show_draft)
-        self.main_window.listWidget_3.itemClicked.connect(self.open_draft)
-        self.main_window.pushButtonBackToInbox.clicked.connect(self.compose_to_inbox)
-        self.main_window.pushButtonComposeAnotherEmail.clicked.connect(self.back_to_comp)
-        self.main_window.Delete_Button.clicked.connect(self.delete_mail)
-        self.main_window.Resend_button.clicked.connect(self.resend_butt)
-        user = 'root'
-        password = 'tyxqc'
-        host = 'localhost'
-        database = 'email'
-        # 创建 EmailDatabase 实例
-        self.email_db = EmailDatabase(user=user, password=password, host=host,  database=database)
+    def change_folder(self, item):
+        if item.text() == '已发送':
+            self.sentGetter.start()
+        if item.text() == '收信箱':
+            self.inboxGetter.start()
+        if item.text() == '草稿箱':
+            self.draftsGetter.start()
 
 
-    def resend_butt(self):
-        print('111')
-        uid=self.uid
-        result=sql.SQL.search_sql_by_uid_with_sender(self.mail_server.username,uid,'Draft')
-        mail=Mail()
-        mail.sender=result[0][0]
-        mail.receiver=result[0][1]
-        mail.topic=result[0][2]
-        mail.uid=result[0][3]
-        self.mail_server.smtp.mail = mail
-        self.mail_server.smtp.path = "C:\\MailServer\\Draft"
-        no=self.mail_server.smtp.sendmail()
-        if(no==errno):
-            self.main_window.close()
-            self.sign_in_window.exec()
-        sql.SQL.delete_sql(uid,'Draft')
-        os.remove("C:\\MailServer\\Draft\\"+uid+'.txt')
-        self.main_window.display_subpage(3)
+    def click_resend(self):
+        recipient = self.draftLineEditTo.text().strip()
+        cc = self.draftLineEditCopyTo.text().split(';') if self.draftLineEditCopyTo.text() else []
+        cc = [email.strip() for email in cc if email.strip()]
+        subject = self.draftLabelEditSubject.text()
+        body = self.draftsTextBrowser.toHtml()
 
-    def delete_mail(self):
-        uid=self.uid
-        result=sql.SQL.search_sql_by_uid(self.mail_server.username,uid,'Mail')
-        index=result[0][4]
-        self.mail_server.pop3.recvmail('DELE',index)
-        self.reflesh_recv()
-        
-    def show_draft(self,item):
-        if(item.text()=='Drafts'):
-            self.main_window.listWidget_3.clear()
-            recvaddr=self.mail_server.username
-            dbtuple=sql.SQL.show_tables()
-            dblist=''
-            for i in dbtuple:
-                dblist+=i[0]
-            if(dblist.find('draft')==-1):
-                sql.SQL.create_sql('Draft')
-            recvtuple=sql.SQL.search_sql_by_sender(recvaddr,'Draft')
-            if(recvtuple==None):
-                return
-            for t in recvtuple:
-                tmp=List_item(t[2],t[0],t[3],t[4])
-                self.main_window.listWidget_3.addItem(tmp)
-                self.main_window.listWidget_3.setItemWidget(tmp,tmp.widgit)
-
-    def open_draft(self,item):
-        uid=item.uid
-        self.uid=uid
-        f=open('C:\\MailServer\\Draft\\'+uid+'.txt')
-        msg=f.read()
-        self.main_window.textBrowser_2.setText(msg)
-
-    def compose_to_inbox(self):
-        self.main_window.stacked_widget.setCurrentIndex(1)
-
-    def back_to_comp(self):
-        self.main_window.lineEditTo.clear()
-        self.main_window.lineEditSubject.clear()
-        self.main_window.textEdit.clear()
-        self.main_window.stacked_widget.setCurrentIndex(0)
-
-    def click_sign_in(self):
-        self.mail_server = MailServer()
-        mail_server_address, username, password = self.sign_in_window.fetch_info()
-        if(username=="" or password==""):
+        if not recipient or not subject or not body:
+            QMessageBox.warning(self, 'Error', '请填写完整的邮件信息')
             return
-        # print(f'{mail_server_address},{username},{password}')
-        self.email_db.login(mail_server_address,username,password)
-        self.mail_server.info_init(mail_server=mail_server_address, username=username, password=password)
-        BussLogic.win_stage=1
-        self.sign_in_window.close()
+
+        try:
+            if cc:
+                success = self.client.send_email(recipient, subject, body, cc)
+            else:
+                success = self.client.send_email(recipient, subject, body)
+            if success:
+                QMessageBox.information(self, 'Success', '邮件发送成功')
+
+                # 创建 Email 对象
+                email = Email(
+                    sender=data_store.USER_NAME,  # 记得改回登录账号
+                    receiver=recipient,
+                    copy_for=';'.join(cc),
+                    title=subject,
+                    body=body,
+                    timestamp=datetime.utcnow(),
+                    folder="sent",
+                )
+
+                try:
+                    self.email_db.add_email(email)
+                except Exception as e:
+                    QMessageBox.warning(self, 'Error', f'保存到数据库失败: {str(e)}')
+                    return
+
+                self.clear_draft_fields()
+                self.listWidget.setCurrentRow(1)
+                self.sentGetter.start()
+                # 选中当前的
+
+            else:
+                QMessageBox.warning(self, 'Error', '邮件发送失败')
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'邮件发送失败: {str(e)}')
+
+
+    def click_resave(self):
+        recipient = self.draftLineEditTo.text()
+        cc = self.draftLineEditCopyTo.text()
+        subject = self.draftLabelEditSubject.text()
+        body = self.draftsTextBrowser.toHtml()
+
+        originEmail:Email = self.cur_item
+
+        email = Email(
+            obj_id=originEmail.obj_id,
+            sender=data_store.USER_NAME,  # 记得改回登录账号
+            receiver=recipient,
+            copy_for=';'.join(cc),
+            title=subject,
+            body=body,
+            timestamp=datetime.utcnow(),
+            folder="drafts"
+        )
+
+        try:
+            self.email_db.update_email(email)
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'保存到数据库失败: {str(e)}')
+            return
+
+        # self.clear_draft_fields()
+        self.listWidget.setCurrentRow(3)
+        self.draftsGetter.start()
+
 
     def click_send(self):
-        self.sender_proc = Sender_proc(sender=self.mail_server.username,
-                                       receiver=self.main_window.lineEditTo.text(),
-                                       subject=self.main_window.lineEditSubject.text(),
-                                       message=self.main_window.textEdit.toPlainText())
-        mail = self.sender_proc.gene_mailclass()
-        self.sender_proc.store()
-        self.mail_server.smtp.mail = mail
-        self.mail_server.smtp.path = "C:\\MailServer\\Draft"
-        no=self.mail_server.smtp.sendmail()
-        if(no==errno):
-            self.main_window.close()
-            self.sign_in_window.exec()
-        self.main_window.display_subpage(3)
+        recipient = self.lineEditTo.text().strip()
+        cc = self.lineEditTo_2.text().split(';') if self.lineEditTo_2.text() else []
+        cc = [email.strip() for email in cc if email.strip()]
+        subject = self.lineEditSubject.text()
+        body = self.rich_text_widget.toHtml()
+
+        if not recipient or not subject or not body:
+            QMessageBox.warning(self, 'Error', '请填写完整的邮件信息')
+            return
+
+        try:
+            if cc:
+                success = self.client.send_email(recipient, subject, body, cc)
+            else:
+                success = self.client.send_email(recipient, subject, body)
+            if success:
+                QMessageBox.information(self, 'Success', '邮件发送成功')
+
+                # 创建 Email 对象
+                email = Email(
+                    sender=data_store.USER_NAME,  # 记得改回登录账号
+                    receiver=recipient,
+                    copy_for=';'.join(cc),
+                    title=subject,
+                    body=body,
+                    timestamp=datetime.utcnow(),
+                    folder="sent",
+                )
+
+                try:
+                    self.email_db.add_email(email)
+                except Exception as e:
+                    QMessageBox.warning(self, 'Error', f'保存到数据库失败: {str(e)}')
+                    return
+
+                self.clear_input_fields()
+                self.listWidget.setCurrentRow(1)
+                self.sentGetter.start()
+                #选中当前的
+
+            else:
+                QMessageBox.warning(self, 'Error', '邮件发送失败')
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'邮件发送失败: {str(e)}')
 
     def click_save(self):
-        self.sender_proc = Sender_proc(sender=self.mail_server.username,
-                                       receiver=self.main_window.lineEditTo.text(),
-                                       subject=self.main_window.lineEditSubject.text(),
-                                       message=self.main_window.textEdit.toPlainText())
-        mail=self.sender_proc.gene_mailclass()
-        self.sender_proc.store()
-        sql.SQL.add_sql(mail.sender,mail.receiver,mail.topic,mail.uid,0,'Draft')
+        recipient = self.lineEditTo.text()
+        cc = self.lineEditTo_2.text()
+        subject = self.lineEditSubject.text()
+        body = self.rich_text_widget.toHtml()
 
-    def trans_info(self):
-        mail_server_address, username, password = self.sign_in_window.fetch_info()
-        self.mail_server.info_init(mail_server_address, username, password)
+        email = Email(
+            sender=data_store.USER_NAME,  # 记得改回登录账号
+            receiver=recipient,
+            copy_for=';'.join(cc),
+            title=subject,
+            body=body,
+            timestamp=datetime.utcnow(),
+            folder="drafts"
+        )
 
-    def reflesh_recv(self):
-        self.main_window.listWidget_2.clear()
-        self.mail_server.pop3.recvmail('LIST',0)
-        recvaddr=self.mail_server.username
-        recvtuple=sql.SQL.search_sql(recvaddr,'Mail')
-        if(recvtuple==None):
-            return
-        for t in recvtuple:
-            tmp=List_item(t[2],t[0],t[3],t[4])
-            self.main_window.listWidget_2.addItem(tmp)
-            self.main_window.listWidget_2.setItemWidget(tmp,tmp.widgit)
-
-    def show_recv(self,item):
-        if(item.text()=='Inbox'):
-            self.main_window.listWidget_2.clear()
-            recvaddr=self.mail_server.username
-            dbtuple=sql.SQL.show_tables()
-            dblist=''
-            for i in dbtuple:
-                dblist+=i[0]
-            if(dblist.find('mail')==-1):
-                sql.SQL.create_sql('Mail')
-            recvtuple=sql.SQL.search_sql(recvaddr,'Mail')
-            if(recvtuple==None):
-                return
-            for t in recvtuple:
-                tmp=List_item(t[2],t[0],t[3],t[4])
-                self.main_window.listWidget_2.addItem(tmp)
-                self.main_window.listWidget_2.setItemWidget(tmp,tmp.widgit)
-
-    def show_mail(self,item):
-        uid=item.uid
-        self.uid=uid
-        if(not os.path.exists('C:\\MailServer\\'+uid+'.txt')):
-            self.mail_server.pop3.recvmail('RETR',item.index)
-        f=open('C:\\MailServer\\'+uid+'.txt')
-        msg=f.read()
         try:
-            self.main_window.textBrowser.setText(msg)
+            self.email_db.add_email(email)
         except Exception as e:
+            QMessageBox.warning(self, 'Error', f'保存到数据库失败: {str(e)}')
+            return
+
+        self.clear_input_fields()
+        self.listWidget.setCurrentRow(3)
+        self.draftsGetter.start()
+    def clear_input_fields(self):
+        self.lineEditTo.clear()
+        self.lineEditTo_2.clear()
+        self.lineEditSubject.clear()
+        self.rich_text_widget.text_edit.clear()
+
+
+    def showListContextMenu(self, pos: QPoint):
+        contextMenu = QMenu(self)
+
+        refresh_act = QAction('刷新', self)
+        refresh_act.triggered.connect(self.refreshList)
+        contextMenu.addAction(refresh_act)
+
+        selectedItem = self.listWidgetInbox.itemAt(pos)
+        if selectedItem:
+            deleteAct = QAction('删除', self)
+            deleteAct.triggered.connect(self.deleteItem)
+            contextMenu.addAction(deleteAct)
+
+        quitAct = QAction('退出', self)
+        contextMenu.addAction(quitAct)
+        quitAct.triggered.connect(QApplication.quit)
+
+        contextMenu.exec_(self.listWidgetInbox.mapToGlobal(pos))
+
+    def refreshList(self):
+        if self.listWidget.currentItem().text() == '已发送':
+            self.sentGetter.start()
+
+        if self.listWidget.currentItem().text() == '收件箱':
+            self.inboxGetter.start()
+
+        if self.listWidget.currentItem().text() == '草稿箱':
+            self.draftsGetter.start()
+
+    def clear_draft_fields(self):
+        self.draftLineEditTo.clear()
+        self.draftLineEditCopyTo.clear()
+        self.draftLabelEditSubject.clear()
+        self.draftsTextBrowser.text_edit.clear()
+
+    def deleteItem(self):
+
+        if self.listWidget.currentItem().text() == '已发送':
+            selectedItem = self.listWidgetSent.currentItem()
+            if selectedItem:
+                self.listWidgetSent.takeItem(self.listWidgetSent.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+                self.email_db.delete_email(email.obj_id, "sent")
+                self.sentTextBrowser.clear()
+
+        if self.listWidget.currentItem().text() == '收件箱':
+            selectedItem = self.listWidgetInbox.currentItem()
+            if selectedItem:
+                self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+                # 默认账号密码
+                client = EmailClient(
+                    data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
+                    data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
+                    data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
+                    data_store.EmailConfig.POP_PORT,  # POP 端口
+                    data_store.USER_NAME,  # 用户名
+                    data_store.PASSWORD  # 密码
+                )
+
+                client.delete_email(email.obj_id)
+                self.email_db.delete_email(email.obj_id, "inbox")
+                self.inboxTextBrowser.clear()
+
+        if self.listWidget.currentItem().text() == '草稿箱':
+            selectedItem = self.listWidgetDrafts.currentItem()
+            if selectedItem:
+                self.listWidgetDrafts.takeItem(self.listWidgetDrafts.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+                self.email_db.delete_email(email.obj_id, "drafts")
+                self.clear_draft_fields()
+
+    def onItemClicked(self, item: QListWidgetItem):
+        # print(item)
+        email: Email = item.data(Qt.UserRole)
+        if email:
+            self.cur_item = email
+            if self.listWidget.currentItem().text() == '已发送':
+                print(email)
+                self.sentTextBrowser.setHtml(f"""
+                   <h2 style="color: #0073e6; margin-bottom: 10px;">{email.title}</h2>
+                   <p style="margin: 5px 3px;"><strong>发件人:</strong> {email.sender}</p>
+                   <p style="margin: 5px 3px;"><strong>收件人:</strong> {email.receiver}</p>
+                   <p style="margin: 5px 3px;"><strong>抄送人:</strong> {email.copy_for}</p>
+                   <p style="margin: 5px 3px 2px 3px;"><strong>时间:</strong> {email.timestamp}</p>
+                   <hr style="margin: 0;">
+                   <p style="margin: 3px 3px;"><strong>正文:</strong></p>
+                   <div style="margin: 3px 3px;">{email.body}</div>
+                   """)
+
+            if self.listWidget.currentItem().text() == '收信箱':
+                self.inboxTextBrowser.setHtml(f"""
+                   <h2 style="color: #0073e6; margin-bottom: 10px;">{email.title}</h2>
+                   <p style="margin: 5px 3px;"><strong>发件人:</strong> {email.sender}</p>
+                   <p style="margin: 5px 3px;"><strong>收件人:</strong> {email.receiver}</p>
+                   <p style="margin: 5px 3px;"><strong>抄送人:</strong> {email.copy_for}</p>
+                   <p style="margin: 5px 3px 2px 3px;"><strong>时间:</strong> {email.timestamp}</p>
+                   <hr style="margin: 0;">
+                   <p style="margin: 3px 3px;"><strong>正文:</strong></p>
+                   <div style="margin: 3px 3px;">{email.body}</div>
+                   """)
+
+            if self.listWidget.currentItem().text() == '草稿箱':
+                self.draftLineEditTo.setText(email.sender)
+                self.draftLineEditCopyTo.setText(email.copy_for)
+                self.draftLabelEditSubject.setText(email.title)
+                self.draftsTextBrowser.setHtml(email.body)
+
+
+
+
+
+class SimpleGetEmail(QThread):
+    def __init__(self, main_win: MainWindowUi, email_db: EmailDatabase):
+        super(SimpleGetEmail, self).__init__()
+        self.main_win = main_win
+        self.email_db = email_db
+
+class SimpleGetSent(SimpleGetEmail):
+    def run(self):
+        try:
+            self.main_win.listWidgetSent.clear()
+            # 从数据库获取已发送邮件
+            emails = self.email_db.get_sent_emails()
+            print(emails)
+            for email in emails:
+                list_item = QListWidgetItem()
+                list_item.setData(Qt.UserRole, email)
+                self.main_win.listWidgetSent.addItem(list_item)
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'获取数据库的邮件失败: {str(e)}')
             print(e)
 
-class List_item(QtWidgets.QListWidgetItem):
-    def __init__(self,subject,sender,uid,index):
+class SimpleGetInbox(SimpleGetEmail):
+    def run(self):
+        try:
+            self.main_win.listWidgetInbox.clear()
+
+            # 从数据库获取收件箱邮件
+            emails_from_db = self.email_db.get_inbox()
+            print("inbox: ", emails_from_db)
+            for elem in emails_from_db:
+                # self.main_win.listWidgetInbox.addItem(elem.title)
+                list_item = QListWidgetItem()
+                list_item.setData(Qt.UserRole, elem)
+                self.main_win.listWidgetInbox.addItem(list_item)
+
+            # 默认账号密码
+            client = EmailClient(
+                data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
+                data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
+                data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
+                data_store.EmailConfig.POP_PORT,  # POP 端口
+                data_store.USER_NAME,  # 用户名
+                data_store.PASSWORD  # 密码
+            )
+            # 网络可用则再从网络获取邮件
+            emails_from_net: List[Email] = client.get_email_list(offset=0, limit=9999)
+            for elem in emails_from_net:
+                if elem in emails_from_db:
+                    continue
+
+                # 新邮件加到数据库
+                self.email_db.add_email(elem)
+
+
+        except Exception as e:
+            # QMessageBox.warning(self.main_win, "出错", f'出错了：{e}')
+            print(e)
+
+
+class SimpleGetDrafts(SimpleGetEmail):
+    def run(self):
+        try:
+            self.main_win.listWidgetDrafts.clear()
+
+            # 从数据库获取草稿
+            drafts_from_db = self.email_db.get_draft_emails()
+            print("drafts: ", drafts_from_db)
+
+            # 展示到列表
+            for elem in drafts_from_db:
+                # self.main_win.listWidgetInbox.addItem(elem.title)
+                list_item = QListWidgetItem()
+                list_item.setData(Qt.UserRole, elem)
+                self.main_win.listWidgetDrafts.addItem(list_item)
+
+        except Exception as e:
+            # QMessageBox.warning(self.main_win, "出错", f'出错了：{e}')
+            print(e)
+
+
+class EmailDelegate(QStyledItemDelegate):
+    def paint(self, painter, option, index):
+        painter.save()
+
+        email: [Email] = index.data(Qt.UserRole)
+        if email:
+            rect = option.rect
+            sender = email.sender
+            receiver=email.receiver
+            subject = email.title
+            type= email.folder
+
+            # Adjust rect to provide spacing between items
+            margin = 2
+            inner_rect = QRect(rect.left() + margin, rect.top() + margin, rect.width() - 2 * margin,
+                               rect.height() - 2 * margin)
+
+            # Set background color
+            if option.state & QStyle.State_Selected:
+                painter.fillRect(inner_rect, option.palette.highlight())
+            elif option.state & QStyle.State_MouseOver:
+                painter.fillRect(inner_rect, QColor("#AED6F1"))
+            else:
+                painter.fillRect(inner_rect, QColor("#D6EAF8"))
+
+            # Draw sender
+            painter.setFont(QFont("Arial", 10, QFont.Bold))
+            painter.setPen(Qt.black)
+            if type=="inbox" :
+                painter.drawText(inner_rect.adjusted(10, 5, -10, -inner_rect.height() // 2), Qt.AlignLeft, f"<{sender}>")
+            else :
+                painter.drawText(inner_rect.adjusted(10, 5, -10, -inner_rect.height() // 2), Qt.AlignLeft,
+                                 f"<{receiver}>")
+            # Draw subject
+            painter.setFont(QFont("Arial", 10))
+            painter.setPen(Qt.black)
+            painter.drawText(inner_rect.adjusted(10, inner_rect.height() // 2, -10, -5), Qt.AlignLeft, subject)
+
+        painter.restore()
+
+    def sizeHint(self, option, index):
+        size = super().sizeHint(option, index)
+        size.setHeight(size.height() + 50)
+        return size
+
+
+class BussLogic(QtWidgets.QMainWindow):
+    def __init__(self):
         super().__init__()
-        self.uid=uid
-        self.index=index
-        self.widgit=QtWidgets.QWidget()
-        self.subject_label=QtWidgets.QLabel()
-        self.subject_label.setText(subject)
-        self.sender_label=QtWidgets.QLabel()
-        self.sender_label.setText(sender)
-        self.hbox=QtWidgets.QVBoxLayout()
-        self.hbox.addWidget(self.sender_label)
-        self.hbox.addWidget(self.subject_label)
-        self.widgit.setLayout(self.hbox)
-        self.setSizeHint(self.widgit.sizeHint())
+        self.sign_in_window = SignInWindowUi()
+        self.sign_in_window.pushButtonSignin.clicked.connect(self.click_sign_in)
+
+        # 读取数据
+        user = data_store.DatabaseConfig.USER
+        password = data_store.DatabaseConfig.PASSWORD
+        host = data_store.DatabaseConfig.HOST
+        database = data_store.DatabaseConfig.DATABASE
+        # 创建 EmailDatabase 实例
+        self.email_db = EmailDatabase(user=user, password=password, host=host, database=database)
+
+        self.main_window = MainWindowUi(self.email_db)
+
+    def click_sign_in(self):
+        mail_server_address, username, password = self.sign_in_window.fetch_info()
+        if username == "" or password == "":
+            QMessageBox.warning(self, 'Error', '请输入用户名密码')
+            return
+        print(f'{mail_server_address},{username},{password}')
+
+        try:
+            self.email_db.login(mail_server_address, username, password)
+
+            # 根据输入的用户名密码修改pop和smtp的用户名密码
+            # data_store.USER_NAME = username
+            # data_store.PASSWORD = password
+            # 根据输入内容修改客户端
+            # self.client = EmailClient(
+            #     "smtp-mail.outlook.com",  # SMTP 服务器地址
+            #     587,  # SMTP 端口
+            #     "outlook.office365.com",  # POP 服务器地址
+            #     995,  # POP 端口
+            #     username,  # 用户名
+            #     password  # 密码
+            # )
+
+            BussLogic.win_stage = 1
+            self.sign_in_window.close()
+            self.main_window.show()
+        except Exception as e:
+            print(f"Caught an exception: {e}")
+            QMessageBox.warning(self, "提示", f"{e}")
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
@@ -274,5 +575,7 @@ if __name__ == "__main__":
     buss.sign_in_window.exec()
     # if(BussLogic.win_stage==0):
     #     exit()
-    buss.main_window.show()
+
+    # buss.sub_window.show()
+
     sys.exit(app.exec_())

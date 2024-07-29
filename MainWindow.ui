@@ -91,7 +91,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../dove1.png</normaloff>../dove1.png</iconset>
+    <normaloff>image/dove1.png</normaloff>image/dove1.png</iconset>
   </property>
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
@@ -107,7 +107,7 @@
      <widget class="QListWidget" name="listWidget">
       <item>
        <property name="text">
-        <string>Compose</string>
+        <string>写信</string>
        </property>
        <property name="font">
         <font>
@@ -137,12 +137,29 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../pencil2.png</normaloff>../pencil2.png</iconset>
+         <normaloff>image/pencil2.png</normaloff>image/pencil2.png</iconset>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Inbox</string>
+        <string>已发送</string>
+       </property>
+       <property name="font">
+        <font>
+         <family>Microsoft YaHei UI</family>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>image/sended.png</normaloff>image/sended.png</iconset>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>收信箱</string>
        </property>
        <property name="font">
         <font>
@@ -155,12 +172,12 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../inbox.png</normaloff>../inbox.png</iconset>
+         <normaloff>image/inbox.png</normaloff>image/inbox.png</iconset>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Drafts</string>
+        <string>草稿箱</string>
        </property>
        <property name="font">
         <font>
@@ -172,7 +189,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../contacts.png</normaloff>../contacts.png</iconset>
+         <normaloff>image/contacts.png</normaloff>image/contacts.png</iconset>
        </property>
       </item>
      </widget>
@@ -192,7 +209,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageCompose">
        <widget class="QLabel" name="labelNewMail">
@@ -213,7 +230,7 @@
          </font>
         </property>
         <property name="text">
-         <string>New Mail</string>
+         <string>新邮件</string>
         </property>
        </widget>
        <widget class="QLabel" name="labelTo">
@@ -234,7 +251,7 @@
          </font>
         </property>
         <property name="text">
-         <string>To:</string>
+         <string>收件方</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="lineEditTo">
@@ -262,8 +279,8 @@
        <widget class="QLabel" name="labelSubject">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>80</y>
+          <x>20</x>
+          <y>120</y>
           <width>91</width>
           <height>31</height>
          </rect>
@@ -277,14 +294,14 @@
          </font>
         </property>
         <property name="text">
-         <string>Subject:</string>
+         <string>主题</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="lineEditSubject">
         <property name="geometry">
          <rect>
           <x>90</x>
-          <y>80</y>
+          <y>120</y>
           <width>721</width>
           <height>31</height>
          </rect>
@@ -299,26 +316,10 @@
          <string/>
         </property>
        </widget>
-       <widget class="QTextEdit" name="textEdit">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>120</y>
-          <width>801</width>
-          <height>491</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Microsoft YaHei UI</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </widget>
        <widget class="QPushButton" name="pushButtonSend">
         <property name="geometry">
          <rect>
-          <x>10</x>
+          <x>290</x>
           <y>620</y>
           <width>71</width>
           <height>41</height>
@@ -331,13 +332,13 @@
          </font>
         </property>
         <property name="text">
-         <string>Send</string>
+         <string>发送</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButtonSave">
         <property name="geometry">
          <rect>
-          <x>100</x>
+          <x>450</x>
           <y>620</y>
           <width>71</width>
           <height>41</height>
@@ -350,12 +351,56 @@
          </font>
         </property>
         <property name="text">
-         <string>Save</string>
+         <string>保存</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="labelTo_2">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>80</y>
+          <width>91</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Microsoft YaHei Light</family>
+          <pointsize>12</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>抄送</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEditTo_2">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>80</y>
+          <width>721</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Microsoft YaHei UI</family>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </widget>
+      <widget class="QWidget" name="pageSended"/>
       <widget class="QWidget" name="pageInbox">
-       <widget class="QListWidget" name="listWidget_2">
+       <widget class="QListWidget" name="listWidgetInbox">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -365,7 +410,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QTextBrowser" name="textBrowser">
+       <widget class="QTextBrowser" name="inboxTextBrowser">
         <property name="geometry">
          <rect>
           <x>280</x>
@@ -388,52 +433,6 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="Reflesh_Button">
-        <property name="geometry">
-         <rect>
-          <x>240</x>
-          <y>0</y>
-          <width>40</width>
-          <height>40</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>../refresh2.png</normaloff>../refresh2.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>40</width>
-          <height>40</height>
-         </size>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="Delete_Button">
-        <property name="geometry">
-         <rect>
-          <x>770</x>
-          <y>620</y>
-          <width>40</width>
-          <height>40</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>../TRASH BIN.png</normaloff>../TRASH BIN.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>40</width>
-          <height>40</height>
-         </size>
-        </property>
-       </widget>
        <widget class="QListWidget" name="listWidget_4">
         <property name="geometry">
          <rect>
@@ -445,7 +444,7 @@ p, li { white-space: pre-wrap; }
         </property>
         <item>
          <property name="text">
-          <string>Inbox</string>
+          <string>收信箱</string>
          </property>
          <property name="font">
           <font>
@@ -457,18 +456,13 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../inbox.png</normaloff>../inbox.png</iconset>
+           <normaloff>image/inbox.png</normaloff>image/inbox.png</iconset>
          </property>
         </item>
        </widget>
-       <zorder>listWidget_2</zorder>
-       <zorder>textBrowser</zorder>
-       <zorder>Delete_Button</zorder>
-       <zorder>listWidget_4</zorder>
-       <zorder>Reflesh_Button</zorder>
       </widget>
-      <widget class="QWidget" name="pageContacts">
-       <widget class="QListWidget" name="listWidget_3">
+      <widget class="QWidget" name="pageDrafts">
+       <widget class="QListWidget" name="listWidgetDrafts">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -483,7 +477,7 @@ p, li { white-space: pre-wrap; }
          </font>
         </property>
        </widget>
-       <widget class="QTextBrowser" name="textBrowser_2">
+       <widget class="QTextBrowser" name="draftsTextBrowser">
         <property name="geometry">
          <rect>
           <x>281</x>
@@ -529,7 +523,7 @@ p, li { white-space: pre-wrap; }
         </property>
         <item>
          <property name="text">
-          <string>Drafts</string>
+          <string>草稿箱</string>
          </property>
          <property name="font">
           <font>
@@ -541,7 +535,7 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../contacts.png</normaloff>../contacts.png</iconset>
+           <normaloff>image/contacts.png</normaloff>image/contacts.png</iconset>
          </property>
         </item>
        </widget>
@@ -550,7 +544,7 @@ p, li { white-space: pre-wrap; }
        <widget class="QLabel" name="label">
         <property name="geometry">
          <rect>
-          <x>300</x>
+          <x>320</x>
           <y>100</y>
           <width>111</width>
           <height>101</height>
@@ -560,15 +554,15 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap>../EmailSentIcon.png</pixmap>
+         <pixmap>image/EmailSentIcon.png</pixmap>
         </property>
        </widget>
        <widget class="QLabel" name="label_2">
         <property name="geometry">
          <rect>
-          <x>300</x>
-          <y>190</y>
-          <width>131</width>
+          <x>320</x>
+          <y>200</y>
+          <width>121</width>
           <height>41</height>
          </rect>
         </property>
@@ -581,7 +575,7 @@ p, li { white-space: pre-wrap; }
          </font>
         </property>
         <property name="text">
-         <string>Email Sent</string>
+         <string>邮件成功发送</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButtonBackToInbox">
@@ -600,7 +594,7 @@ p, li { white-space: pre-wrap; }
          </font>
         </property>
         <property name="text">
-         <string>Back to Inbox</string>
+         <string>回到收信箱</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButtonComposeAnotherEmail">
@@ -619,26 +613,7 @@ p, li { white-space: pre-wrap; }
          </font>
         </property>
         <property name="text">
-         <string>Compose another email</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_3">
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>250</y>
-          <width>441</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Microsoft YaHei UI Light</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>The email is sent and has been saved to the &quot;Sent&quot; folder</string>
+         <string>编写另一封邮件</string>
         </property>
        </widget>
       </widget>
@@ -648,19 +623,15 @@ p, li { white-space: pre-wrap; }
   </widget>
  </widget>
  <tabstops>
-  <tabstop>listWidget</tabstop>
   <tabstop>lineEditTo</tabstop>
   <tabstop>lineEditSubject</tabstop>
-  <tabstop>textEdit</tabstop>
   <tabstop>pushButtonSend</tabstop>
   <tabstop>pushButtonSave</tabstop>
   <tabstop>listWidget_4</tabstop>
-  <tabstop>Reflesh_Button</tabstop>
-  <tabstop>listWidget_2</tabstop>
-  <tabstop>textBrowser</tabstop>
-  <tabstop>Delete_Button</tabstop>
-  <tabstop>listWidget_3</tabstop>
-  <tabstop>textBrowser_2</tabstop>
+  <tabstop>listWidgetInbox</tabstop>
+  <tabstop>inboxTextBrowser</tabstop>
+  <tabstop>listWidgetDrafts</tabstop>
+  <tabstop>draftsTextBrowser</tabstop>
   <tabstop>Resend_button</tabstop>
   <tabstop>pushButtonBackToInbox</tabstop>
   <tabstop>pushButtonComposeAnotherEmail</tabstop>
