@@ -349,11 +349,18 @@ class Ui_MainWindow(object):
         self.Resend_button = QtWidgets.QPushButton(self.pageDrafts)
         self.Resend_button.setGeometry(QtCore.QRect(740, 620, 71, 41))
 
+        self.ResaveButtom = QtWidgets.QPushButton(self.pageDrafts)
+        self.ResaveButtom.setGeometry(QtCore.QRect(640, 620, 71, 41))
+
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(11)
         self.Resend_button.setFont(font)
         self.Resend_button.setObjectName("Resend_button")
+
+        self.ResaveButtom.setFont(font)
+        self.ResaveButtom.setObjectName("ResaveButtom")
+
         self.listWidget_5 = QtWidgets.QListWidget(self.pageDrafts)
         self.listWidget_5.setGeometry(QtCore.QRect(0, 0, 281, 40))
         self.listWidget_5.setObjectName("listWidget_5")
@@ -419,7 +426,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.inboxTextBrowser, self.listWidgetDrafts)
         MainWindow.setTabOrder(self.listWidgetDrafts, self.draftsTextBrowser)
         MainWindow.setTabOrder(self.draftsTextBrowser, self.Resend_button)
-        MainWindow.setTabOrder(self.Resend_button, self.pushButtonBackToInbox)
+        MainWindow.setTabOrder(self.Resend_button, self.ResaveButtom)
+        MainWindow.setTabOrder(self.ResaveButtom, self.pushButtonBackToInbox)
         MainWindow.setTabOrder(self.pushButtonBackToInbox, self.pushButtonComposeAnotherEmail)
 
     def retranslateUi(self, MainWindow):
@@ -467,6 +475,7 @@ class Ui_MainWindow(object):
         self.listWidget_4.setSortingEnabled(__sortingEnabled)
 
         self.Resend_button.setText(_translate("MainWindow", "发送"))
+        self.ResaveButtom.setText(_translate("MainWindow", "保存"))
 
         __sortingEnabled = self.listWidget_5.isSortingEnabled()
         self.listWidget_5.setSortingEnabled(False)

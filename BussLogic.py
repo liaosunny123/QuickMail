@@ -56,9 +56,14 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
         self.email_db = email_db
         # self.sub_window = SubWindow()
+        self.cur_item = None
 
         self.pushButtonSend.clicked.connect(self.click_send)
         self.pushButtonSave.clicked.connect(self.click_save)
+
+
+        self.Resend_button.clicked.connect(self.click_resend)
+        self.ResaveButtom.clicked.connect(self.click_resave)
 
 
 
@@ -113,6 +118,83 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
             self.inboxGetter.start()
         if item.text() == '草稿箱':
             self.draftsGetter.start()
+
+
+    def click_resend(self):
+        recipient = self.draftLineEditTo.text().strip()
+        cc = self.draftLineEditCopyTo.text().split(';') if self.draftLineEditCopyTo.text() else []
+        cc = [email.strip() for email in cc if email.strip()]
+        subject = self.draftLabelEditSubject.text()
+        body = self.draftsTextBrowser.toHtml()
+
+        if not recipient or not subject or not body:
+            QMessageBox.warning(self, 'Error', '请填写完整的邮件信息')
+            return
+
+        try:
+            if cc:
+                success = self.client.send_email(recipient, subject, body, cc)
+            else:
+                success = self.client.send_email(recipient, subject, body)
+            if success:
+                QMessageBox.information(self, 'Success', '邮件发送成功')
+
+                # 创建 Email 对象
+                email = Email(
+                    sender=data_store.USER_NAME,  # 记得改回登录账号
+                    receiver=recipient,
+                    copy_for=';'.join(cc),
+                    title=subject,
+                    body=body,
+                    timestamp=datetime.utcnow(),
+                    folder="sent",
+                )
+
+                try:
+                    self.email_db.add_email(email)
+                except Exception as e:
+                    QMessageBox.warning(self, 'Error', f'保存到数据库失败: {str(e)}')
+                    return
+
+                self.clear_draft_fields()
+                self.listWidget.setCurrentRow(1)
+                self.sentGetter.start()
+                # 选中当前的
+
+            else:
+                QMessageBox.warning(self, 'Error', '邮件发送失败')
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'邮件发送失败: {str(e)}')
+
+
+    def click_resave(self):
+        recipient = self.draftLineEditTo.text()
+        cc = self.draftLineEditCopyTo.text()
+        subject = self.draftLabelEditSubject.text()
+        body = self.draftsTextBrowser.toHtml()
+
+        originEmail:Email = self.cur_item
+
+        email = Email(
+            obj_id=originEmail.obj_id,
+            sender=data_store.USER_NAME,  # 记得改回登录账号
+            receiver=recipient,
+            copy_for=';'.join(cc),
+            title=subject,
+            body=body,
+            timestamp=datetime.utcnow(),
+            folder="drafts"
+        )
+
+        try:
+            self.email_db.update_email(email)
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'保存到数据库失败: {str(e)}')
+            return
+
+        # self.clear_draft_fields()
+        self.listWidget.setCurrentRow(3)
+        self.draftsGetter.start()
 
 
     def click_send(self):
@@ -188,6 +270,12 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.draftsGetter.start()
 
 
+    def clear_draft_fields(self):
+        self.draftLineEditTo.clear()
+        self.draftLineEditCopyTo.clear()
+        self.draftLabelEditSubject.clear()
+        self.draftsTextBrowser.text_edit.clear()
+
     def clear_input_fields(self):
         self.lineEditTo.clear()
         self.lineEditTo_2.clear()
@@ -228,6 +316,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         # print(item)
         email: Email = item.data(Qt.UserRole)
         if email:
+            self.cur_item = email
             if self.listWidget.currentItem().text() == '已发送':
                 print(email)
                 self.sentTextBrowser.setHtml(f"""
