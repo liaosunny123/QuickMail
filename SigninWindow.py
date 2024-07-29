@@ -113,7 +113,7 @@ class Ui_Dialog(object):
         self.labelUsername.setFont(font)
         self.labelUsername.setObjectName("labelUsername")
         self.labelServerAddress = QtWidgets.QLabel(Dialog)
-        self.labelServerAddress.setGeometry(QtCore.QRect(730, 330, 91, 31))
+        self.labelServerAddress.setGeometry(QtCore.QRect(690, 330, 191, 31))
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(10)
@@ -158,13 +158,13 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "EasyMail"))
-        self.labelPassword.setText(_translate("Dialog", "Password:"))
+        Dialog.setWindowTitle(_translate("Dialog", "QuickMail"))
+        self.labelPassword.setText(_translate("Dialog", "密码:"))
         self.labelEasyMail_2.setText(_translate("Dialog", "QuickMail"))
         self.comboBoxServerAddress.setItemText(0, _translate("Dialog", "QQ Mail"))
         self.comboBoxServerAddress.setItemText(1, _translate("Dialog", "WHU E-Mail"))
         self.comboBoxServerAddress.setItemText(2, _translate("Dialog", "163 Mail"))
         self.comboBoxServerAddress.setItemText(3, _translate("Dialog", "Gmail"))
-        self.labelUsername.setText(_translate("Dialog", "Username:"))
-        self.labelServerAddress.setText(_translate("Dialog", "Server:"))
-        self.pushButtonSignin.setText(_translate("Dialog", "Login"))
+        self.labelUsername.setText(_translate("Dialog", "用户名:"))
+        self.labelServerAddress.setText(_translate("Dialog", "邮箱类型:"))
+        self.pushButtonSignin.setText(_translate("Dialog", "登录"))

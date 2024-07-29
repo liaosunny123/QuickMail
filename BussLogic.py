@@ -1,7 +1,7 @@
 # from SignInWindow import Ui_Dialog as SignInWindow_Ui
 from SigninWindow import Ui_Dialog as SignInWindow_Ui
 from MainWindow import Ui_MainWindow as MainWindow_Ui
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets,QtGui
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import sys
 from mailserver import *
@@ -22,11 +22,19 @@ class SignInWindowUi(SignInWindow_Ui, QtWidgets.QDialog):
         password = self.lineEditPassword.text()
         return self.mail_server_address, username, password
     
-    def paintEvent(self, event):# set background_img
-        painter = QPainter(self)
-        painter.drawRect(self.rect())
-        pixmap = QPixmap("./icon/whu_login_background.jpeg")#换成自己的图片的相对路径
-        painter.drawPixmap(self.rect(), pixmap)
+    # def paintEvent(self, event):# set background_img
+    #     painter = QPainter(self)
+    #     painter.drawRect(self.rect())
+    #     pixmap = QPixmap("./icon/whu_login_background.jpeg")#换成自己的图片的相对路径
+    #     painter.drawPixmap(self.rect(), pixmap)
+    def paintEvent(self, event):
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        
+        # 设置背景颜色为指定颜色，例如浅蓝色
+        background_color = QtGui.QColor(173, 216, 230)  # 浅蓝色
+        painter.fillRect(self.rect(), background_color)
+
 
     def select_server_address(self):
         if self.comboBoxServerAddress.currentText() == "QQ Mail":

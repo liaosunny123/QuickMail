@@ -73,7 +73,7 @@ class EmailModel(Base):
 class EmailDatabase:
     def __init__(self, user, password, host, database):
         self.engine = create_engine(f'mysql+mysqldb://{user}:{password}@{host}/{database}')
-        Base.metadata.create_all(self.engine)
+        # Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
         self.username = None
 
