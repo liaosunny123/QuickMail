@@ -268,14 +268,6 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         self.clear_input_fields()
         self.listWidget.setCurrentRow(3)
         self.draftsGetter.start()
-
-
-    def clear_draft_fields(self):
-        self.draftLineEditTo.clear()
-        self.draftLineEditCopyTo.clear()
-        self.draftLabelEditSubject.clear()
-        self.draftsTextBrowser.text_edit.clear()
-
     def clear_input_fields(self):
         self.lineEditTo.clear()
         self.lineEditTo_2.clear()
@@ -311,6 +303,49 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
 
         if self.listWidget.currentItem().text() == '草稿箱':
             self.draftsGetter.start()
+
+    def clear_draft_fields(self):
+        self.draftLineEditTo.clear()
+        self.draftLineEditCopyTo.clear()
+        self.draftLabelEditSubject.clear()
+        self.draftsTextBrowser.text_edit.clear()
+
+    def deleteItem(self):
+
+        if self.listWidget.currentItem().text() == '已发送':
+            selectedItem = self.listWidgetSent.currentItem()
+            if selectedItem:
+                self.listWidgetSent.takeItem(self.listWidgetSent.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+                self.email_db.delete_email(email.obj_id, "sent")
+                self.sentTextBrowser.clear()
+
+        if self.listWidget.currentItem().text() == '收件箱':
+            selectedItem = self.listWidgetInbox.currentItem()
+            if selectedItem:
+                self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+                # 默认账号密码
+                client = EmailClient(
+                    data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
+                    data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
+                    data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
+                    data_store.EmailConfig.POP_PORT,  # POP 端口
+                    data_store.USER_NAME,  # 用户名
+                    data_store.PASSWORD  # 密码
+                )
+
+                client.delete_email(email.obj_id)
+                self.email_db.delete_email(email.obj_id, "inbox")
+                self.inboxTextBrowser.clear()
+
+        if self.listWidget.currentItem().text() == '草稿箱':
+            selectedItem = self.listWidgetDrafts.currentItem()
+            if selectedItem:
+                self.listWidgetDrafts.takeItem(self.listWidgetDrafts.row(selectedItem))
+                email = selectedItem.data(Qt.UserRole)
+                self.email_db.delete_email(email.obj_id, "drafts")
+                self.clear_draft_fields()
 
     def onItemClicked(self, item: QListWidgetItem):
         # print(item)
@@ -348,49 +383,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                 self.draftLabelEditSubject.setText(email.title)
                 self.draftsTextBrowser.setHtml(email.body)
 
-    def clearDraftFields(self):
-        self.draftLineEditTo.clear()
-        self.draftLineEditCopyTo.clear()
-        self.draftLabelEditSubject.clear()
-        self.draftsTextBrowser.text_edit.clear()
 
-
-    def deleteItem(self):
-
-        if self.listWidget.currentItem().text() == '已发送':
-            selectedItem = self.listWidgetSent.currentItem()
-            if selectedItem:
-                self.listWidgetSent.takeItem(self.listWidgetSent.row(selectedItem))
-                email = selectedItem.data(Qt.UserRole)
-                self.email_db.delete_email(email.obj_id, "sent")
-                self.sentTextBrowser.clear()
-
-        if self.listWidget.currentItem().text() == '收件箱':
-            selectedItem = self.listWidgetInbox.currentItem()
-            if selectedItem:
-                self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
-                email = selectedItem.data(Qt.UserRole)
-                # 默认账号密码
-                client = EmailClient(
-                    data_store.EmailConfig.SMTP_SERVER,  # SMTP 服务器地址
-                    data_store.EmailConfig.SMTP_PORT,  # SMTP 端口
-                    data_store.EmailConfig.POP_SERVER,  # POP 服务器地址
-                    data_store.EmailConfig.POP_PORT,  # POP 端口
-                    data_store.USER_NAME,  # 用户名
-                    data_store.PASSWORD  # 密码
-                )
-
-                client.delete_email(email.obj_id)
-                self.email_db.delete_email(email.obj_id, "inbox")
-                self.inboxTextBrowser.clear()
-
-        if self.listWidget.currentItem().text() == '草稿箱':
-            selectedItem = self.listWidgetDrafts.currentItem()
-            if selectedItem:
-                self.listWidgetDrafts.takeItem(self.listWidgetDrafts.row(selectedItem))
-                email = selectedItem.data(Qt.UserRole)
-                self.email_db.delete_email(email.obj_id, "drafts")
-                self.clearDraftFields()
 
 
 
