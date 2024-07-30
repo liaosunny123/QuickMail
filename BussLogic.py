@@ -546,7 +546,10 @@ class BussLogic(QtWidgets.QMainWindow):
 
         try:
             self.email_db.login(mail_server_address, username, password)
-
+            data_store.EmailConfig.POP_SERVER=mail_server_address
+            data_store.EmailConfig.SMTP_SERVER=mail_server_address
+            data_store.USER_NAME=username
+            data_store.PASSWORD=password
             # 根据输入的用户名密码修改pop和smtp的用户名密码
             # data_store.USER_NAME = username
             # data_store.PASSWORD = password
