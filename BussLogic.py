@@ -306,7 +306,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
         if self.listWidget.currentItem().text() == '已发送':
             self.sentGetter.start()
 
-        if self.listWidget.currentItem().text() == '收件箱':
+        if self.listWidget.currentItem().text() == '收信箱':
             self.inboxGetter.start()
 
         if self.listWidget.currentItem().text() == '草稿箱':
@@ -328,7 +328,7 @@ class MainWindowUi(MainWindow_Ui, QtWidgets.QMainWindow):
                 self.email_db.delete_email(email.obj_id, "sent")
                 self.sentTextBrowser.clear()
 
-        if self.listWidget.currentItem().text() == '收件箱':
+        if self.listWidget.currentItem().text() == '收信箱':
             selectedItem = self.listWidgetInbox.currentItem()
             if selectedItem:
                 self.listWidgetInbox.takeItem(self.listWidgetInbox.row(selectedItem))
@@ -421,7 +421,7 @@ class SimpleGetInbox(SimpleGetEmail):
         try:
             self.main_win.listWidgetInbox.clear()
 
-            # 从数据库获取收件箱邮件
+            # 从数据库获取收信箱邮件
             emails_from_db = self.email_db.get_inbox()
             print("inbox: ", emails_from_db)
             for elem in emails_from_db:
